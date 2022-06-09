@@ -23,7 +23,6 @@ class UserRepositoryTest {
                            .username("username")
                            .password("password")
                            .email("emaill@e.mail")
-                           .status(JOIN)
                            .build();
 
         Users save = usersRepository.save(users);
@@ -41,7 +40,6 @@ class UserRepositoryTest {
                            .username("username")
                            .password("password")
                            .email("emaill@e.mail")
-                           .status(JOIN)
                            .build();
 
         Users save = usersRepository.save(users);
@@ -60,7 +58,6 @@ class UserRepositoryTest {
                            .username("username")
                            .password("password")
                            .email("emaill@e.mail")
-                           .status(JOIN)
                            .build();
 
         Users save = usersRepository.save(users);
@@ -71,7 +68,7 @@ class UserRepositoryTest {
         Users findUser = usersRepository.findById(save.getId())
                                         .orElseThrow(IllegalArgumentException::new);
 
-        assertThat(findUser.getStatus()).isEqualTo(WITHDRAWAL);
+        assertThat(findUser.getStatus()).isEqualTo(DELETED);
     }
 
     @Test
@@ -82,7 +79,6 @@ class UserRepositoryTest {
                            .username("username")
                            .password("password")
                            .email("emaill@e.mail")
-                           .status(JOIN)
                            .build();
 
         Users save = usersRepository.save(users);
@@ -102,7 +98,6 @@ class UserRepositoryTest {
                            .username("username")
                            .password("password")
                            .email("emaill@e.mail")
-                           .status(JOIN)
                            .build();
 
         Users save = usersRepository.save(users);
@@ -121,7 +116,6 @@ class UserRepositoryTest {
                            .username("username")
                            .password("password")
                            .email("emaill@e.mail")
-                           .status(JOIN)
                            .build();
 
         Users save = usersRepository.save(users);
@@ -130,5 +124,22 @@ class UserRepositoryTest {
                                          .orElseThrow(IllegalArgumentException::new);
 
         assertThat(loginUser).isEqualTo(save);
+    }
+
+    @Test
+    @DisplayName("아이디 중복")
+    void testUsernameOverlap() {
+
+        Users users = Users.builder()
+                           .username("username")
+                           .password("password")
+                           .email("emaill@e.mail")
+                           .build();
+
+        usersRepository.save(users);
+
+        boolean result = usersRepository.existsByUsername(users.getUsername());
+
+        assertThat(result).isTrue();
     }
 }
