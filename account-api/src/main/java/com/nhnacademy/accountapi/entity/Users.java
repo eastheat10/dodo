@@ -7,10 +7,18 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Users {
 
     @Id
@@ -24,4 +32,12 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public void deleteUser() {
+        this.status = Status.WITHDRAWAL;
+    }
+
+    public void makeDormant() {
+        this.status = Status.DORMANT;
+    }
 }
