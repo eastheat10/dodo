@@ -1,9 +1,10 @@
 server:
-  port: 8082
+  port: 8081
 
 spring:
   profiles:
     include: db
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
