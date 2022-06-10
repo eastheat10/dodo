@@ -1,9 +1,9 @@
 package com.nhnacademy.accountapi.repository;
 
-import static com.nhnacademy.accountapi.entity.Status.*;
+import static com.nhnacademy.accountapi.entity.UserStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
-import com.nhnacademy.accountapi.entity.Users;
+import com.nhnacademy.accountapi.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,39 +13,39 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class UserRepositoryTest {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("사용자 등록")
     void testUserRegister() {
 
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        Users save = usersRepository.save(users);
+        User save = userRepository.save(user);
 
         System.out.println(save.getStatus());
 
-        assertThat(save).isEqualTo(users);
+        assertThat(save).isEqualTo(user);
     }
 
     @Test
     @DisplayName("회원 조회")
     void testReadUser() {
 
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        Users save = usersRepository.save(users);
+        User save = userRepository.save(user);
 
-        Users findUser = usersRepository.findById(save.getId())
-                                        .orElseThrow(IllegalArgumentException::new);
+        User findUser = userRepository.findById(save.getId())
+                                      .orElseThrow(IllegalArgumentException::new);
 
         assertThat(findUser).isEqualTo(save);
     }
@@ -54,19 +54,19 @@ class UserRepositoryTest {
     @DisplayName("회원 삭제")
     void testDeleteUser() {
 
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        Users save = usersRepository.save(users);
+        User save = userRepository.save(user);
 
         save.deleteUser();
-        usersRepository.flush();
+        userRepository.flush();
 
-        Users findUser = usersRepository.findById(save.getId())
-                                        .orElseThrow(IllegalArgumentException::new);
+        User findUser = userRepository.findById(save.getId())
+                                      .orElseThrow(IllegalArgumentException::new);
 
         assertThat(findUser.getStatus()).isEqualTo(DELETED);
     }
@@ -75,18 +75,18 @@ class UserRepositoryTest {
     @DisplayName("회원 휴면 처리")
     void testUserStatusDormant() {
 
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        Users save = usersRepository.save(users);
+        User save = userRepository.save(user);
 
         save.makeDormant();
-        usersRepository.flush();
+        userRepository.flush();
 
-        Users findUser = usersRepository.findById(save.getId()).get();
+        User findUser = userRepository.findById(save.getId()).get();
 
         assertThat(findUser.getStatus()).isEqualTo(DORMANT);
     }
@@ -94,16 +94,16 @@ class UserRepositoryTest {
     @Test
     @DisplayName("Email로 회원 찾기")
     void testFindUserByEmail() {
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        Users save = usersRepository.save(users);
+        User save = userRepository.save(user);
 
-        Users emailUser = usersRepository.findByEmail(save.getEmail())
-                                         .orElseThrow(IllegalArgumentException::new);
+        User emailUser = userRepository.findByEmail(save.getEmail())
+                                       .orElseThrow(IllegalArgumentException::new);
 
         assertThat(emailUser).isEqualTo(save);
     }
@@ -112,16 +112,16 @@ class UserRepositoryTest {
     @DisplayName("로그인")
     void testUserLogin() {
 
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        Users save = usersRepository.save(users);
+        User save = userRepository.save(user);
 
-        Users loginUser = usersRepository.findByUsernameAndPassword(users.getUsername(), users.getPassword())
-                                         .orElseThrow(IllegalArgumentException::new);
+        User loginUser = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword())
+                                       .orElseThrow(IllegalArgumentException::new);
 
         assertThat(loginUser).isEqualTo(save);
     }
@@ -130,15 +130,15 @@ class UserRepositoryTest {
     @DisplayName("아이디 중복")
     void testUsernameOverlap() {
 
-        Users users = Users.builder()
-                           .username("username")
-                           .password("password")
-                           .email("emaill@e.mail")
-                           .build();
+        User user = User.builder()
+                        .username("username")
+                        .password("password")
+                        .email("emaill@e.mail")
+                        .build();
 
-        usersRepository.save(users);
+        userRepository.save(user);
 
-        boolean result = usersRepository.existsByUsername(users.getUsername());
+        boolean result = userRepository.existsByUsername(user.getUsername());
 
         assertThat(result).isTrue();
     }

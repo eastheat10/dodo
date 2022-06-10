@@ -13,10 +13,10 @@ import static org.mockito.Mockito.verify;
 import com.nhnacademy.accountapi.dto.request.UserLoginRequest;
 import com.nhnacademy.accountapi.dto.request.UserSignupRequest;
 import com.nhnacademy.accountapi.dto.response.UserResponse;
-import com.nhnacademy.accountapi.entity.Status;
-import com.nhnacademy.accountapi.entity.Users;
+import com.nhnacademy.accountapi.entity.UserStatus;
+import com.nhnacademy.accountapi.entity.User;
 import com.nhnacademy.accountapi.exception.UsernameOverlapException;
-import com.nhnacademy.accountapi.repository.UsersRepository;
+import com.nhnacademy.accountapi.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +27,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-class UsersServiceTest {
+class UserServiceTest {
 
     @InjectMocks
-    private UsersService usersService;
+    private UserService usersService;
 
     @Mock
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     String username = "username";
     String password = "password";
@@ -43,30 +43,26 @@ class UsersServiceTest {
     @DisplayName("회원가입")
     void doSignup() {
 
-        Users users = getUser();
+        User user = getUser();
 
         UserSignupRequest request = new UserSignupRequest();
-        UserResponse response = new UserResponse(users);
 
         ReflectionTestUtils.setField(request, "username", username);
         ReflectionTestUtils.setField(request, "password", password);
         ReflectionTestUtils.setField(request, "email", email);
 
-        given(usersRepository.save(any())).willReturn(users);
+        given(userRepository.save(any())).willReturn(user);
 
-        UserResponse savedUser = usersService.doSignup(request);
+        usersService.doSignup(request);
 
-        verify(usersRepository, times(1)).save(any());
-        assertThat(savedUser.getStatus()).isEqualTo(Status.JOIN);
-        assertThat(savedUser.getUsername()).isEqualTo(response.getUsername());
-        assertThat(savedUser.getPassword()).isEqualTo(response.getPassword());
+        verify(userRepository, times(1)).save(any());
     }
 
     @Test
     @DisplayName("아이디 중복으로 회원가입 실패")
     void testSignupFail() {
 
-        Users users = getUser();
+        User user = getUser();
 
         UserSignupRequest request = new UserSignupRequest();
 
@@ -74,11 +70,11 @@ class UsersServiceTest {
         ReflectionTestUtils.setField(request, "password", password);
         ReflectionTestUtils.setField(request, "email", email);
 
-        given(usersRepository.save(any())).willReturn(users);
+        given(userRepository.save(any())).willReturn(user);
 
         usersService.doSignup(request);
 
-        given(usersRepository.existsByUsername(username)).willReturn(true);
+        given(userRepository.existsByUsername(username)).willReturn(true);
 
         assertThatThrownBy(() -> usersService.doSignup(request))
             .isInstanceOf(UsernameOverlapException.class);
@@ -93,17 +89,17 @@ class UsersServiceTest {
         ReflectionTestUtils.setField(request, "username", username);
         ReflectionTestUtils.setField(request, "password", password);
 
-        Users users = getUser();
+        User user = getUser();
 
-        UserResponse response = new UserResponse(users);
+        UserResponse response = new UserResponse(user);
 
         given(
-            usersRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword()))
-            .willReturn(Optional.of(users));
+            userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword()))
+            .willReturn(Optional.of(user));
 
         UserResponse loginResponse = usersService.doLogin(request);
 
-        verify(usersRepository, times(1)).findByUsernameAndPassword(anyString(), anyString());
+        verify(userRepository, times(1)).findByUsernameAndPassword(anyString(), anyString());
         assertThat(loginResponse.getUsername()).isEqualTo(response.getUsername());
         assertThat(loginResponse.getPassword()).isEqualTo(response.getPassword());
     }
@@ -112,13 +108,13 @@ class UsersServiceTest {
     @DisplayName("이메일로 회원 찾기")
     void testFindUserByEmail() {
 
-        Users users = getUser();
+        User user = getUser();
 
-        given(usersRepository.findByEmail(email)).willReturn(Optional.of(users));
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
 
         UserResponse userByEmail = usersService.findUserByEmail(email);
 
-        verify(usersRepository, times(1)).findByEmail(anyString());
+        verify(userRepository, times(1)).findByEmail(anyString());
         assertThat(userByEmail.getEmail()).isEqualTo(email);
     }
 
@@ -126,38 +122,38 @@ class UsersServiceTest {
     @DisplayName("사용자 휴면 처리")
     void testUserMakeDormant() {
 
-        Users users = spy(getUser());
+        User user = spy(getUser());
 
-        given(usersRepository.findById(anyLong())).willReturn(Optional.of(users));
-        lenient().when(users.getId()).thenReturn(1L);
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        lenient().when(user.getId()).thenReturn(1L);
 
         usersService.makeStatusDormant(1L);
 
-        verify(users, times(1)).makeDormant();
-        assertThat(users.getStatus()).isEqualTo(Status.DORMANT);
+        verify(user, times(1)).makeDormant();
+        assertThat(user.getStatus()).isEqualTo(UserStatus.DORMANT);
     }
 
     @Test
     @DisplayName("사용자 삭제")
     void testUserDelete() {
 
-        Users users = spy(getUser());
+        User user = spy(getUser());
 
-        given(usersRepository.findById(anyLong())).willReturn(Optional.of(users));
-        lenient().when(users.getId()).thenReturn(1L);
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+        lenient().when(user.getId()).thenReturn(1L);
 
         usersService.deleteUser(1L);
 
-        verify(users, times(1)).deleteUser();
-        assertThat(users.getStatus()).isEqualTo(Status.DELETED);
+        verify(user, times(1)).deleteUser();
+        assertThat(user.getStatus()).isEqualTo(UserStatus.DELETED);
     }
 
-    private Users getUser() {
-        return Users.builder()
-                    .username(username)
-                    .password(password)
-                    .email(email)
-                    .build();
+    private User getUser() {
+        return User.builder()
+                   .username(username)
+                   .password(password)
+                   .email(email)
+                   .build();
     }
 
 }
