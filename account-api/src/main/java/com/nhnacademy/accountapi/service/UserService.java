@@ -42,8 +42,7 @@ public class UserService {
     public UserResponse doLogin(UserLoginRequest loginUser) {
 
         User user =
-            userRepository.findByUsernameAndPassword(loginUser.getUsername(),
-                               loginUser.getPassword())
+            userRepository.findByUsername(loginUser.getUsername())
                           .orElseThrow(LoginUserNotFoundException::new);
 
         return new UserResponse(user);

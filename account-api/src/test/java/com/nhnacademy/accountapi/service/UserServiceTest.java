@@ -87,19 +87,18 @@ class UserServiceTest {
         UserLoginRequest request = new UserLoginRequest();
 
         ReflectionTestUtils.setField(request, "username", username);
-        ReflectionTestUtils.setField(request, "password", password);
 
         User user = getUser();
 
         UserResponse response = new UserResponse(user);
 
         given(
-            userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword()))
+            userRepository.findByUsername(request.getUsername()))
             .willReturn(Optional.of(user));
 
         UserResponse loginResponse = usersService.doLogin(request);
 
-        verify(userRepository, times(1)).findByUsernameAndPassword(anyString(), anyString());
+        verify(userRepository, times(1)).findByUsername(anyString());
         assertThat(loginResponse.getUsername()).isEqualTo(response.getUsername());
         assertThat(loginResponse.getPassword()).isEqualTo(response.getPassword());
     }
