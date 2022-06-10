@@ -7,19 +7,20 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import lombok.AllArgsConstructor;
+import javax.persistence.Table;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Entity
-@Builder
-@AllArgsConstructor
+@Table(name = "Users")
+@ToString
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +32,21 @@ public class Users {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private UserStatus status;
+
+    @Builder
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.status = UserStatus.JOIN;
+    }
 
     public void deleteUser() {
-        this.status = Status.WITHDRAWAL;
+        this.status = UserStatus.DELETED;
     }
 
     public void makeDormant() {
-        this.status = Status.DORMANT;
+        this.status = UserStatus.DORMANT;
     }
 }
