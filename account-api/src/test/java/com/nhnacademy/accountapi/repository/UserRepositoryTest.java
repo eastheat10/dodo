@@ -120,7 +120,7 @@ class UserRepositoryTest {
 
         User save = userRepository.save(user);
 
-        User loginUser = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword())
+        User loginUser = userRepository.findByUsername(user.getUsername())
                                        .orElseThrow(IllegalArgumentException::new);
 
         assertThat(loginUser).isEqualTo(save);

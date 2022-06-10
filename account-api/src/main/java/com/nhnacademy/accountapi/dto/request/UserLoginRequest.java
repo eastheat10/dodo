@@ -10,8 +10,5 @@ public class UserLoginRequest {
 
     @NotBlank
     private String username;
-
-    @NotBlank
-    private String password;
 }
 
