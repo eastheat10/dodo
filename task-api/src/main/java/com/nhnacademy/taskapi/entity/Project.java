@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.entity;
 
+import com.nhnacademy.taskapi.dto.request.project.ProjectCreateRequest;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,10 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "Projects")
+@Getter
 @NoArgsConstructor
 public class Project {
 
@@ -34,4 +37,19 @@ public class Project {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    public Project(ProjectCreateRequest request) {
+        this.adminId = request.getAdminId();
+        this.status = ProjectStatus.PROGRESS;
+        this.name = request.getProjectName();
+        this.startDate = LocalDate.now();
+    }
+
+    public void makeEndProject() {
+        this.status = ProjectStatus.END;
+    }
+
+    public void makeDormantProject() {
+        this.status = ProjectStatus.DORMANT;
+    }
 }
