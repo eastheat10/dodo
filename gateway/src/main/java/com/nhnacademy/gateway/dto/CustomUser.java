@@ -3,23 +3,26 @@ package com.nhnacademy.gateway.dto;
 import com.nhnacademy.gateway.dto.response.user.UserResponse;
 import java.util.Collection;
 import java.util.List;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 public class CustomUser implements UserDetails {
 
-    private String username;
-    private String password;
-    private String email;
-    private String status;
+    private final String username;
+    private final String password;
+    private final String email;
+    private final String status;
 
-    private List<? extends GrantedAuthority> authorities;
+    private final List<? extends GrantedAuthority> authorities;
 
-    public CustomUser(UserResponse userResponse) {
+    public CustomUser(UserResponse userResponse, List<? extends GrantedAuthority> authorities) {
         this.username = userResponse.getUsername();
         this.password = userResponse.getPassword();
         this.email = userResponse.getEmail();
         this.status = userResponse.getUserStatus();
+        this.authorities = authorities;
     }
 
     @Override

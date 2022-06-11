@@ -1,2 +1,6 @@
+spring:
+  profiles:
+    include: oauth, redis
+
 server:
   port: 8080
