@@ -100,10 +100,11 @@ class MilestoneServiceTest {
     @DisplayName("마일스톤 삭제")
     void testDeleteMilestone() {
 
-        doNothing().when(milestoneRepository).deleteById(anyLong());
+        when(milestoneRepository.findById(1L)).thenReturn(Optional.of(mock(Milestone.class)));
+        doNothing().when(milestoneRepository).delete(any(Milestone.class));
 
         milestoneService.deleteMilestone(1L);
 
-        verify(milestoneRepository, times(1)).deleteById(1L);
+        verify(milestoneRepository, times(1)).delete(any(Milestone.class));
     }
 }
