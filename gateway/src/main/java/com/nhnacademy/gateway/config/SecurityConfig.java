@@ -1,18 +1,19 @@
 package com.nhnacademy.gateway.config;
 
+import com.nhnacademy.gateway.security.handler.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -20,28 +21,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-        throws Exception {
-
-        return configuration.getAuthenticationManager();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
             .authorizeRequests()
-            .antMatchers("/", "/users/login", "/users/signup").permitAll();
+            .antMatchers("/", "/login", "/signup").permitAll();
 
         http
             .formLogin()
+            .successHandler(loginSuccessHandler(null))
             .usernameParameter("username")
             .passwordParameter("password")
-            .loginPage("/auth/login");
+            .loginPage("/users/login")
+            .loginProcessingUrl("/login");
 
         http
             .logout()
-            .logoutUrl("/auth/logout");
+            .logoutUrl("/users/logout");
 
         http
             .headers()
@@ -53,10 +49,14 @@ public class SecurityConfig {
             .csrf()
             .disable();
 
-        http
-            .authenticationProvider(authenticationProvider(null, null));
-
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler loginSuccessHandler(
+        RedisTemplate<String, String> redisTemplate) {
+
+        return new LoginSuccessHandler(redisTemplate);
     }
 
     @Bean

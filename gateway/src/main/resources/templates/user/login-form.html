@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+
+<form th:action="@{/login}" method="POST">
+
+    <input type="text" name="username" placeholder="USERNAME">
+    <br/><br/>
+    <input type="password" name="password" placeholder="PASSWORD">
+    <br/><br/>
+    <input type="submit" value="LOGIN">
+</form>
+<a href="/login/github">GITHUB</a>
+</body>
+</html>

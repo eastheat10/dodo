@@ -4,7 +4,6 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import com.nhnacademy.gateway.adapter.UserSignupAdapter;
 import com.nhnacademy.gateway.dto.request.user.UserSignupRequest;
 import com.nhnacademy.gateway.exception.SignupFailException;
 import java.util.Objects;

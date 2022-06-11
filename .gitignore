@@ -170,5 +170,6 @@ buildNumber.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij+iml,java,mavengit
 
-application-github.yml
+application-oauth.yml
 application-db.yml
+application-redis.yml

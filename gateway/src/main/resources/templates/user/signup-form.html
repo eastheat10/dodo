@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<form th:action="@{signup}" method="POST" th:object="${userSignupRequest}">
+<form th:action="@{/signup}" method="POST" th:object="${userSignupRequest}">
     <input type="text" name="username" placeholder="USERNAME" />
     <br />
     <span class="error" th:if="${#fields.hasErrors('username')}" th:error="*{username}">USERNAME ERROR</span>
