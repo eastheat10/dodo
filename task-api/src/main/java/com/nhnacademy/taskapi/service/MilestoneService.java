@@ -3,8 +3,8 @@ package com.nhnacademy.taskapi.service;
 import static java.util.stream.Collectors.*;
 
 import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
-import com.nhnacademy.taskapi.dto.request.milestone.MileStoneCreateRequest;
-import com.nhnacademy.taskapi.dto.request.milestone.MileStoneModifyRequest;
+import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
+import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneListResponse;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneResponse;
 import com.nhnacademy.taskapi.entity.Milestone;
@@ -26,7 +26,7 @@ public class MilestoneService {
     private final ProjectRepository projectRepository;
 
     @Transactional
-    public void createMileStone(MileStoneCreateRequest mileStoneRequest) {
+    public void createMileStone(CreateMileStoneRequest mileStoneRequest) {
 
         Project project = projectRepository.findById(mileStoneRequest.getProjectId())
                                            .orElseThrow(ProjectNotFoundException::new);
@@ -37,7 +37,7 @@ public class MilestoneService {
     public MilestoneListResponse findMilestoneByProjectId(Long projectId) {
 
         List<MilestoneResponse> milestoneList =
-            milestoneRepository.findMilestoneByProjectId(projectId)
+            milestoneRepository.findMilestoneByProject_Id(projectId)
                                .stream()
                                .map(MilestoneResponse::new)
                                .collect(toList());
@@ -47,20 +47,20 @@ public class MilestoneService {
 
     public MilestoneResponse findMilestone(Long id) {
 
-        MilestoneDto milestoneDto =
-            milestoneRepository.findMilestoneById(id)
+        Milestone milestone =
+            milestoneRepository.findById(id)
                                .orElseThrow(MilestoneNotFoundException::new);
 
-        return new MilestoneResponse(milestoneDto);
+        return new MilestoneResponse(milestone);
     }
 
     @Transactional
-    public void modifyMilestone(MileStoneModifyRequest mileStoneModifyRequest) {
+    public void modifyMilestone(ModifyMileStoneRequest modifyMileStoneRequest) {
 
-        Milestone milestone = milestoneRepository.findById(mileStoneModifyRequest.getId())
+        Milestone milestone = milestoneRepository.findById(modifyMileStoneRequest.getId())
                                                  .orElseThrow(MilestoneNotFoundException::new);
 
-        milestone.modifyMilestone(mileStoneModifyRequest);
+        milestone.modifyMilestone(modifyMileStoneRequest);
     }
 
     @Transactional

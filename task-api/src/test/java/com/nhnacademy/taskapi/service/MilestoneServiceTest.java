@@ -10,9 +10,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
-import com.nhnacademy.taskapi.dto.request.milestone.MileStoneCreateRequest;
-import com.nhnacademy.taskapi.dto.request.milestone.MileStoneModifyRequest;
+import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
+import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneListResponse;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.Project;
@@ -44,7 +43,7 @@ class MilestoneServiceTest {
     @DisplayName("마일스톤 생성")
     void createMileStone() {
 
-        MileStoneCreateRequest request = new MileStoneCreateRequest();
+        CreateMileStoneRequest request = new CreateMileStoneRequest();
         ReflectionTestUtils.setField(request, "projectId", 1L);
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(mock(Project.class)));
@@ -60,11 +59,11 @@ class MilestoneServiceTest {
     @DisplayName("해당 프로젝트의 마일스톤 목록 조회")
     void testFindMilestoneList() {
 
-        when(milestoneRepository.findMilestoneByProjectId(1L)).thenReturn(new ArrayList<>());
+        when(milestoneRepository.findMilestoneByProject_Id(1L)).thenReturn(new ArrayList<>());
 
         MilestoneListResponse milestoneByProjectId = milestoneService.findMilestoneByProjectId(1L);
 
-        verify(milestoneRepository, times(1)).findMilestoneByProjectId(1L);
+        verify(milestoneRepository, times(1)).findMilestoneByProject_Id(1L);
         assertThat(milestoneByProjectId).isNotNull();
     }
 
@@ -72,18 +71,21 @@ class MilestoneServiceTest {
     @DisplayName("마일스톤 하나 조회")
     void testFindMilestone() {
 
-        when(milestoneRepository.findMilestoneById(1L)).thenReturn(Optional.of(mock(MilestoneDto.class)));
+        Milestone milestone = spy(new Milestone());
+
+        when(milestoneRepository.findById(1L)).thenReturn(Optional.of(milestone));
+        when(milestone.getProject()).thenReturn(mock(Project.class));
 
         milestoneService.findMilestone(1L);
 
-        verify(milestoneRepository, times(1)).findMilestoneById(1L);
+        verify(milestoneRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("마일스톤 수정")
     void testModifyMilestone() {
 
-        MileStoneModifyRequest request = new MileStoneModifyRequest();
+        ModifyMileStoneRequest request = new ModifyMileStoneRequest();
         ReflectionTestUtils.setField(request, "id", 1L);
 
         Milestone milestone = mock(Milestone.class);

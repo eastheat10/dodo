@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.entity;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -9,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
@@ -21,18 +23,24 @@ public class ThePersonInCharge {
     private Pk id;
 
     @MapsId("taskId")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "task_id")
     private Task task;
+
+    public ThePersonInCharge(Task task, Long memberId) {
+        this.id = new Pk(memberId, task.getId());
+        this.task = task;
+    }
 
     @Embeddable
     @EqualsAndHashCode
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class Pk implements Serializable {
 
-        @Column(name = "member_id")
-        private Long member_id;
-
         private Long taskId;
+
+        @Column(name = "member_id")
+        private Long memberId;
     }
 }

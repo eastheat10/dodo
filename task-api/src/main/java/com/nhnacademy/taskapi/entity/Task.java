@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.entity;
 
-import java.time.LocalDate;
+import com.nhnacademy.taskapi.dto.request.task.CreateTaskRequest;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,10 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "Tasks")
+@Getter
 @NoArgsConstructor
 public class Task {
 
@@ -23,19 +27,32 @@ public class Task {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     @OneToOne
     @JoinColumn(name = "milestone_id")
     private Milestone milestone;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String content;
 
-    @Column(name = "registrant_name")
-    private String registrant;
+    @Column(name = "registrant_name", nullable = false)
+    private String registrantName;
 
-    @Column(name = "created_at")
-    private LocalDate createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    public Task(Project project, Milestone milestone, CreateTaskRequest request) {
+        this.project = project;
+        this.milestone = milestone;
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.registrantName = request.getRegistrantName();
+        this.createdAt = request.getCreatedAt();
+    }
 }

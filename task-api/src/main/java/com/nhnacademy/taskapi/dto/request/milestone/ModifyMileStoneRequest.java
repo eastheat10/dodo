@@ -6,9 +6,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MileStoneCreateRequest {
+public class ModifyMileStoneRequest {
 
-    private Long projectId;
+    private Long id;
     private String milestoneName;
+    private LocalDate startDate;
     private LocalDate endDate;
 }
