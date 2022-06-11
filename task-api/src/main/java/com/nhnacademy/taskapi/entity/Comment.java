@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tables")
+@Table(name = "Comments")
 @NoArgsConstructor
 public class Comment {
 

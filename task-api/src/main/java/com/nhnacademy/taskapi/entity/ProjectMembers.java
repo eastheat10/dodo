@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.entity;
 
+import com.nhnacademy.taskapi.dto.request.project.AddProjectMemberRequest;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -25,9 +26,21 @@ public class ProjectMembers {
     @MapsId("projectId")
     @ManyToOne
     @JoinColumn(name = "project_id")
-    private Project projects;
+    private Project project;
 
     private String username;
+
+    public ProjectMembers(Project project, AddProjectMemberRequest.MemberInfo info) {
+        this.id = new Pk(project.getId(), info.getMemberId());
+        this.project = project;
+        this.username = info.getUsername();
+    }
+
+    public ProjectMembers(Project project, Long memberId, String username) {
+        this.id = new Pk(project.getId(), memberId);
+        this.project = project;
+        this.username = username;
+    }
 
     @Getter
     @Embeddable
