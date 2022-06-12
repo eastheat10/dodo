@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -93,15 +94,15 @@ class ProjectControllerTest {
     @DisplayName("멤버가 참여하는 프로젝트 조회")
     void testFindProjectByMemberId() throws Exception {
 
-        when(projectService.findProjectByMemberId(anyLong())).thenReturn(new ArrayList<>());
+        when(projectService.findProjectByMemberId(anyString())).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/projects/members/{id}", 1L)
+        mockMvc.perform(get("/projects/members/{username}", "username")
                    .accept(APPLICATION_JSON))
                .andExpect(status().isOk())
                .andExpect(content().contentType(APPLICATION_JSON))
                .andDo(print());
 
-        verify(projectService, times(1)).findProjectByMemberId(1L);
+        verify(projectService, times(1)).findProjectByMemberId("username");
     }
 
     @Test

@@ -35,9 +35,9 @@ public class ProjectService {
         projectMembersRepository.save(projectMember);
     }
 
-    public List<ProjectResponse> findProjectByMemberId(Long memberId) {
+    public List<ProjectResponse> findProjectByMemberId(String username) {
 
-        return projectRepository.findProjectByMemberId(memberId)
+        return projectRepository.findProjectByUsername(username)
                                 .stream()
                                 .map(ProjectResponse::new)
                                 .collect(toList());

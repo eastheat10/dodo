@@ -47,10 +47,10 @@ public class ProjectController {
                              .build();
     }
 
-    @GetMapping("/members/{memberId}")
-    public ResponseEntity<List<ProjectResponse>> findProjectsByMemberId(@PathVariable Long memberId) {
+    @GetMapping("/members/{username}")
+    public ResponseEntity<List<ProjectResponse>> findProjectsByUsername(@PathVariable String username) {
 
-        List<ProjectResponse> projects = projectService.findProjectByMemberId(memberId);
+        List<ProjectResponse> projects = projectService.findProjectByMemberId(username);
 
         return ResponseEntity.status(OK)
                              .contentType(APPLICATION_JSON)

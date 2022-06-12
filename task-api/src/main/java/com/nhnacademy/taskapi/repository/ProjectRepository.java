@@ -14,7 +14,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         "FROM Project p " +
         "   JOIN ProjectMember m " +
         "      ON p.id = m.project.id " +
-        "WHERE m.id.memberId = :memberId"
+        "WHERE m.username = :username"
     )
-    List<Project> findProjectByMemberId(Long memberId);
+    List<Project> findProjectByUsername(String username);
 }
