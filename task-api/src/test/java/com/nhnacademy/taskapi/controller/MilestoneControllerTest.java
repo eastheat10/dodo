@@ -1,20 +1,24 @@
 package com.nhnacademy.taskapi.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
 import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneResponse;
+import com.nhnacademy.taskapi.exception.MilestoneNotFoundException;
 import com.nhnacademy.taskapi.service.MilestoneService;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -125,5 +129,32 @@ class MilestoneControllerTest {
                .andExpect(status().isNoContent());
 
         verify(milestoneService, times(1)).deleteMilestone(1L);
+    }
+
+    @Test
+    @DisplayName("Milestone 잘못 접근")
+    void testWrongAccess() throws Exception {
+
+        doThrow(MilestoneNotFoundException.class).when(milestoneService).deleteMilestone(1L);
+
+        mockMvc.perform(delete("/milestones/{id}", 1L))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("not found")));
+    }
+
+    @Test
+    @DisplayName("잘못된 양식")
+    void testWrongFormat() throws Exception {
+
+        CreateMileStoneRequest createRequest = new CreateMileStoneRequest();
+
+        String jsonRequest = mapper.writerWithDefaultPrettyPrinter()
+                                   .writeValueAsString(createRequest);
+
+        mockMvc.perform(post("/milestones")
+                   .contentType(APPLICATION_JSON)
+                   .content(jsonRequest))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("valid")));
     }
 }

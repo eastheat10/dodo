@@ -1,23 +1,28 @@
 package com.nhnacademy.taskapi.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.dto.request.project.AddProjectMemberRequest;
 import com.nhnacademy.taskapi.dto.request.project.CreateProjectRequest;
+import com.nhnacademy.taskapi.exception.ProjectNotFoundException;
 import com.nhnacademy.taskapi.service.ProjectService;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,5 +132,32 @@ class ProjectControllerTest {
                .andExpect(status().isOk());
 
         verify(projectService, times(1)).makeEndProject(1L);
+    }
+
+    @Test
+    @DisplayName("Project 잘못 접근")
+    void testWrongAccess() throws Exception {
+
+        doThrow(ProjectNotFoundException.class).when(projectService).makeEndProject(1L);
+
+        mockMvc.perform(put("/projects/{id}/end", 1L))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("not found")));
+    }
+
+    @Test
+    @DisplayName("잘못된 양식")
+    void testWrongFormat() throws Exception {
+
+        CreateProjectRequest createRequest = new CreateProjectRequest();
+
+        String jsonRequest = mapper.writerWithDefaultPrettyPrinter()
+                                   .writeValueAsString(createRequest);
+
+        mockMvc.perform(post("/projects")
+                   .contentType(APPLICATION_JSON)
+                   .content(jsonRequest))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("valid")));
     }
 }
