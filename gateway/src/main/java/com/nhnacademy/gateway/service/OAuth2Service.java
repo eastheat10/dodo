@@ -100,9 +100,8 @@ public class OAuth2Service {
 
         OAuthToken oAuthToken = getOAuthToken(code);
 
-        RestTemplate template = new RestTemplate();
         ResponseEntity<GithubProfile> profileResponse =
-            template.exchange(PROFILE_REQUEST_URL, HttpMethod.GET, getProfileRequest(oAuthToken),
+            restTemplate.exchange(PROFILE_REQUEST_URL, HttpMethod.GET, getProfileRequest(oAuthToken),
                 GithubProfile.class);
 
         return profileResponse.getBody();
@@ -133,7 +132,6 @@ public class OAuth2Service {
     private OAuthToken getOAuthToken(String code) {
 
         HttpEntity<AccessToken> codeRequest = getCodeRequest(code);
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<OAuthToken> tokenResponse =
             restTemplate.exchange(TOKEN_REQUEST_URL, HttpMethod.POST, codeRequest,
                 OAuthToken.class);
