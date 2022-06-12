@@ -2,7 +2,6 @@ package com.nhnacademy.taskapi.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.ProjectStatus;
@@ -50,10 +49,12 @@ class MilestoneRepositoryTest {
 
         milestoneRepository.saveAll(list);
 
-        List<MilestoneDto> milestones =
-            milestoneRepository.findMilestoneByProjectId(savedProject.getId());
+        System.out.println("\n==== SELECT ====\n");
 
-        milestones.forEach(m -> assertThat(m.getProjectId()).isEqualTo(savedProject.getId()));
+        List<Milestone> milestones =
+            milestoneRepository.findMilestoneByProject_Id(savedProject.getId());
+
+        milestones.forEach(m -> assertThat(m.getProject().getId()).isEqualTo(savedProject.getId()));
     }
 
     @Test
@@ -75,12 +76,14 @@ class MilestoneRepositoryTest {
         ReflectionTestUtils.setField(milestone, "name", "milestone");
         ReflectionTestUtils.setField(milestone, "startDate", LocalDate.now());
 
-        milestoneRepository.save(milestone);
+        Milestone savedMilestone = milestoneRepository.saveAndFlush(milestone);
 
-        MilestoneDto milestoneDto = milestoneRepository.findMilestoneById(1L)
+        System.out.println("\n==== SELECT ====\n");
+
+        Milestone findMilestone = milestoneRepository.findById(savedMilestone.getId())
                                                        .orElseThrow(
                                                            MilestoneNotFoundException::new);
 
-        assertThat(milestoneDto.getId()).isEqualTo(1L);
+        assertThat(findMilestone.getId()).isEqualTo(savedMilestone.getId());
     }
 }

@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.dto.response.comment;
+package com.nhnacademy.taskapi.dto.response.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nhnacademy.taskapi.entity.Comment;

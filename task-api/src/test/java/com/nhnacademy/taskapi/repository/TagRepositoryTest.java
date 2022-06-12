@@ -29,6 +29,7 @@ class TagRepositoryTest {
 
         ReflectionTestUtils.setField(project, "adminId", 99L);
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
+        ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());
 
         Project savedProject = projectRepository.save(project);

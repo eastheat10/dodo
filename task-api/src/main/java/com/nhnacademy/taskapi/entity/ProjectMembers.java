@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.entity;
 
 import com.nhnacademy.taskapi.dto.request.project.AddProjectMemberRequest;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Project_Members")
+@Getter
 @NoArgsConstructor
 public class ProjectMembers {
 
@@ -24,7 +26,7 @@ public class ProjectMembers {
     private Pk id;
 
     @MapsId("projectId")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "project_id")
     private Project project;
 
@@ -51,7 +53,7 @@ public class ProjectMembers {
 
         private Long projectId;
 
-        @Column(name = "member_id")
+        @Column(name = "member_id", nullable = false)
         private Long memberId;
     }
 }

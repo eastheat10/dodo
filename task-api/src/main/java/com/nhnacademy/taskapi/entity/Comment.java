@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.entity;
 import com.nhnacademy.taskapi.dto.request.comment.CreateCommentRequest;
 import com.nhnacademy.taskapi.dto.request.comment.ModifyCommentRequest;
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
