@@ -32,6 +32,8 @@ class MilestoneRepositoryTest {
 
         ReflectionTestUtils.setField(project, "id", 99L);
         ReflectionTestUtils.setField(project, "adminId", 99L);
+        ReflectionTestUtils.setField(project, "adminUsername", "admin");
+        ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());
 
@@ -65,11 +67,12 @@ class MilestoneRepositoryTest {
 
         ReflectionTestUtils.setField(project, "id", 99L);
         ReflectionTestUtils.setField(project, "adminId", 99L);
+        ReflectionTestUtils.setField(project, "adminUsername", "admin");
+        ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());
 
         Project savedProject = projectRepository.save(project);
-
 
         Milestone milestone = new Milestone();
         ReflectionTestUtils.setField(milestone, "project", savedProject);
@@ -81,8 +84,7 @@ class MilestoneRepositoryTest {
         System.out.println("\n==== SELECT ====\n");
 
         Milestone findMilestone = milestoneRepository.findById(savedMilestone.getId())
-                                                       .orElseThrow(
-                                                           MilestoneNotFoundException::new);
+                                                     .orElseThrow(MilestoneNotFoundException::new);
 
         assertThat(findMilestone.getId()).isEqualTo(savedMilestone.getId());
     }

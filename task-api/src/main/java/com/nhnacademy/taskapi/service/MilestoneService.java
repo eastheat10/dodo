@@ -33,15 +33,13 @@ public class MilestoneService {
         milestoneRepository.save(new Milestone(project, mileStoneRequest));
     }
 
-    public MilestoneListResponse findMilestoneByProjectId(Long projectId) {
+    public List<MilestoneResponse> findMilestoneByProjectId(Long projectId) {
 
-        List<MilestoneResponse> milestoneList =
-            milestoneRepository.findMilestoneByProject_Id(projectId)
-                               .stream()
-                               .map(MilestoneResponse::new)
-                               .collect(toList());
+        return milestoneRepository.findMilestoneByProject_Id(projectId)
+                                  .stream()
+                                  .map(MilestoneResponse::new)
+                                  .collect(toList());
 
-        return new MilestoneListResponse(milestoneList);
     }
 
     public MilestoneResponse findMilestone(Long id) {
