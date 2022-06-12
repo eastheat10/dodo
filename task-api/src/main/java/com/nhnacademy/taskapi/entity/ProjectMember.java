@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "Project_Members")
 @Getter
 @NoArgsConstructor
-public class ProjectMembers {
+public class ProjectMember {
 
     @EmbeddedId
     private Pk id;
@@ -32,13 +32,13 @@ public class ProjectMembers {
 
     private String username;
 
-    public ProjectMembers(Project project, AddProjectMemberRequest.MemberInfo info) {
+    public ProjectMember(Project project, AddProjectMemberRequest.MemberInfo info) {
         this.id = new Pk(project.getId(), info.getMemberId());
         this.project = project;
         this.username = info.getUsername();
     }
 
-    public ProjectMembers(Project project, Long memberId, String username) {
+    public ProjectMember(Project project, Long memberId, String username) {
         this.id = new Pk(project.getId(), memberId);
         this.project = project;
         this.username = username;

@@ -1,21 +1,14 @@
 package com.nhnacademy.taskapi.repository;
 
-import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.nhnacademy.taskapi.dto.projection.person.PersonDto;
 import com.nhnacademy.taskapi.entity.Project;
-import com.nhnacademy.taskapi.entity.ProjectMembers;
+import com.nhnacademy.taskapi.entity.ProjectMember;
 import com.nhnacademy.taskapi.entity.ProjectStatus;
 import com.nhnacademy.taskapi.entity.Task;
 import com.nhnacademy.taskapi.entity.ThePersonInCharge;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -57,9 +50,9 @@ class PersonRepositoryTest {
         Task savedTask = taskRepository.saveAndFlush(task);
 
 
-        ProjectMembers pm = new ProjectMembers(project, (long) 1, "username" + 1);
+        ProjectMember pm = new ProjectMember(project, (long) 1, "username" + 1);
 
-        ProjectMembers save = projectMembersRepository.save(pm);
+        ProjectMember save = projectMembersRepository.save(pm);
 
         ThePersonInCharge p = new ThePersonInCharge(savedTask, save.getId().getMemberId());
 

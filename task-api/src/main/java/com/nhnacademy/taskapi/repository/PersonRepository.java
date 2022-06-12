@@ -15,7 +15,7 @@ public interface PersonRepository extends JpaRepository<ThePersonInCharge, ThePe
         "          p.id.memberId AS memberId," +
         "          pm.username AS username " +
         "FROM ThePersonInCharge p " +
-        "   JOIN ProjectMembers pm " +
+        "   JOIN ProjectMember pm " +
         "       ON p.id.memberId = pm.id.memberId " +
         "WHERE p.task.id = :taskId ")
     List<PersonDto> findDtoByTaskId(Long taskId);
