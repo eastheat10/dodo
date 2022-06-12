@@ -32,6 +32,8 @@ class TaskRepositoryTest {
         Project project = new Project();
 
         ReflectionTestUtils.setField(project, "adminId", 99L);
+        ReflectionTestUtils.setField(project, "adminUsername", "admin");
+        ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
         ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());

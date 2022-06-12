@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.dto.request.task;
 
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateTaskRequest {
 
-    @NotBlank
+    @NotNull
     private Long projectId;
 
     private Long milestoneId;

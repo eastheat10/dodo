@@ -13,11 +13,13 @@ import static org.mockito.Mockito.when;
 import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
 import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneListResponse;
+import com.nhnacademy.taskapi.dto.response.milestone.MilestoneResponse;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.repository.MilestoneRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,10 +63,10 @@ class MilestoneServiceTest {
 
         when(milestoneRepository.findMilestoneByProject_Id(1L)).thenReturn(new ArrayList<>());
 
-        MilestoneListResponse milestoneByProjectId = milestoneService.findMilestoneByProjectId(1L);
+        List<MilestoneResponse> milestones = milestoneService.findMilestoneByProjectId(1L);
 
         verify(milestoneRepository, times(1)).findMilestoneByProject_Id(1L);
-        assertThat(milestoneByProjectId).isNotNull();
+        assertThat(milestones).isNotNull();
     }
 
     @Test
