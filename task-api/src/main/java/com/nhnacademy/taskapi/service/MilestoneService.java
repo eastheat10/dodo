@@ -2,7 +2,6 @@ package com.nhnacademy.taskapi.service;
 
 import static java.util.stream.Collectors.*;
 
-import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
 import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
 import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneListResponse;

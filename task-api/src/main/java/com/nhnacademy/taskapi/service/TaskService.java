@@ -3,17 +3,21 @@ package com.nhnacademy.taskapi.service;
 import static java.util.stream.Collectors.*;
 
 import com.nhnacademy.taskapi.dto.request.task.CreateTaskRequest;
+import com.nhnacademy.taskapi.dto.request.task.ModifyTaskRequest;
+import com.nhnacademy.taskapi.dto.request.task.TaskListResponse;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneResponse;
+import com.nhnacademy.taskapi.dto.response.tag.TagResponse;
+import com.nhnacademy.taskapi.dto.response.task.CommentResponse;
+import com.nhnacademy.taskapi.dto.response.task.PersonResponse;
 import com.nhnacademy.taskapi.dto.response.task.TaskResponse;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.Project;
-import com.nhnacademy.taskapi.entity.Tag;
 import com.nhnacademy.taskapi.entity.Task;
 import com.nhnacademy.taskapi.entity.TaskTag;
 import com.nhnacademy.taskapi.entity.ThePersonInCharge;
 import com.nhnacademy.taskapi.exception.ProjectNotFoundException;
-import com.nhnacademy.taskapi.exception.TagNotfoundException;
 import com.nhnacademy.taskapi.exception.TaskNotFoundException;
+import com.nhnacademy.taskapi.repository.CommentRepository;
 import com.nhnacademy.taskapi.repository.MilestoneRepository;
 import com.nhnacademy.taskapi.repository.PersonRepository;
 import com.nhnacademy.taskapi.repository.ProjectMembersRepository;
@@ -23,7 +27,6 @@ import com.nhnacademy.taskapi.repository.TaskRepository;
 import com.nhnacademy.taskapi.repository.TaskTagRepository;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +42,7 @@ public class TaskService {
     private final TaskTagRepository taskTagRepository;
     private final ProjectMembersRepository projectMembersRepository;
     private final PersonRepository personRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public void createTask(CreateTaskRequest createRequest) {
@@ -55,23 +59,20 @@ public class TaskService {
 
         // 업무가 생성될 때 함께 요청된 태그 목록
         List<TaskTag> taskTagList = createRequest.getTags()
-                                             .stream()
-                                             .map(t -> tagRepository.findById(t).orElse(null))
-                                             .filter(Objects::nonNull)
-                                             .map(tag -> new TaskTag(savedTask, tag))
-                                             .collect(toList());
+                                                 .stream()
+                                                 .map(t -> tagRepository.findById(t).orElse(null))
+                                                 .filter(Objects::nonNull)
+                                                 .map(tag -> new TaskTag(savedTask, tag))
+                                                 .collect(toList());
 
         // 담당자
-        List<Long> existMembers = createRequest.getPersons()
-                                               .stream()
-                                               .filter(projectMembersRepository::existsById_memberId)
-                                               .collect(toList());
-
-        // 프로젝트 멤버중 선택된 담당자
-        List<ThePersonInCharge> persons = existMembers.stream()
-                                                      .map(person ->
-                                                          new ThePersonInCharge(savedTask, person))
-                                                      .collect(toList());
+        List<ThePersonInCharge> persons = createRequest.getPeople()
+                                                       .stream()
+                                                       .filter(
+                                                           projectMembersRepository::existsById_memberId)
+                                                       .map(person ->
+                                                           new ThePersonInCharge(savedTask, person))
+                                                       .collect(toList());
 
         if (taskTagList.size() > 0) {
             taskTagRepository.saveAll(taskTagList);
@@ -82,9 +83,9 @@ public class TaskService {
         }
     }
 
-    public TaskResponse findTaskByProjectId(Long projectId) {
+    public TaskResponse findTask(Long taskId) {
 
-        Task task = taskRepository.findByProject_Id(projectId)
+        Task task = taskRepository.findById(taskId)
                                   .orElseThrow(TaskNotFoundException::new);
 
         Milestone milestone = task.getMilestone();
@@ -94,7 +95,84 @@ public class TaskService {
             milestoneResponse = new MilestoneResponse(milestone);
         }
 
-        // TODO
-        return  null;
+        List<TagResponse> tags =
+            taskTagRepository.findByTaskId(task.getId())
+                             .stream()
+                             .map(taskTag -> tagRepository.findById(taskTag.getTag().getId())
+                                                          .orElse(null))
+                             .filter(Objects::nonNull)
+                             .map(TagResponse::new)
+                             .collect(toList());
+
+        List<PersonResponse> people = personRepository.findDtoByTaskId(task.getId())
+                                                      .stream()
+                                                      .map(PersonResponse::new)
+                                                      .collect(toList());
+
+        List<CommentResponse> comments = commentRepository.findByTaskId(task.getId())
+                                                          .stream()
+                                                          .map(CommentResponse::new)
+                                                          .collect(toList());
+
+        return new TaskResponse(task, milestoneResponse, tags, people, comments);
+    }
+
+    public List<TaskListResponse> findTaskByProjectId(Long projectId) {
+
+        return taskRepository.findByProject_Id(projectId)
+                             .stream()
+                             .map(TaskListResponse::new)
+                             .collect(toList());
+    }
+
+    @Transactional
+    public void modifyTask(ModifyTaskRequest modifyTaskRequest) {
+
+        Task task = taskRepository.findById(modifyTaskRequest.getTaskId())
+                                  .orElseThrow(TaskNotFoundException::new);
+
+        Milestone milestone = milestoneRepository.findById(modifyTaskRequest.getMilestoneId())
+                                                 .orElse(null);
+
+        task.modifyTask(milestone, modifyTaskRequest);
+
+        // 태그 삭제 후 재생성
+        List<TaskTag> taskTags = taskTagRepository.findByTaskId(task.getId());
+        taskTagRepository.deleteAll(taskTags);
+
+        List<TaskTag> taskTagList = modifyTaskRequest.getTags()
+                                                     .stream()
+                                                     .map(t -> tagRepository.findById(t)
+                                                                            .orElse(null))
+                                                     .filter(Objects::nonNull)
+                                                     .map(tag -> new TaskTag(task, tag))
+                                                     .collect(toList());
+
+        taskTagRepository.saveAll(taskTagList);
+
+        // 담당자 삭제 후 재생성
+        List<ThePersonInCharge> people = personRepository.findByTaskId(task.getId());
+        personRepository.deleteAll(people);
+
+        // 프로젝트 멤버중 선택된 담당자
+        List<ThePersonInCharge> selectedPeople = modifyTaskRequest.getPeople()
+                                                                  .stream()
+                                                                  .filter(
+                                                                      projectMembersRepository::existsById_memberId)
+                                                                  .map(person ->
+                                                                      new ThePersonInCharge(task,
+                                                                          person))
+                                                                  .collect(toList());
+
+        personRepository.saveAll(selectedPeople);
+    }
+
+    @Transactional
+    public void deleteTask(Long id) {
+
+        Task task = taskRepository.findById(id)
+                                  .orElseThrow(TaskNotFoundException::new);
+
+        taskRepository.delete(task);
     }
 }

@@ -11,10 +11,12 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Task_Tags")
+@Getter
 @NoArgsConstructor
 public class TaskTag {
 
@@ -22,7 +24,7 @@ public class TaskTag {
     private Pk id;
 
     @MapsId("taskId")
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "task_id")
     private Task task;
 

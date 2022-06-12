@@ -8,6 +8,8 @@ import com.nhnacademy.taskapi.entity.Task;
 import com.nhnacademy.taskapi.exception.TaskNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,20 +38,25 @@ class TaskRepositoryTest {
 
         Project savedProject = projectRepository.save(project);
 
-        Task task = new Task();
-        ReflectionTestUtils.setField(task, "project", savedProject);
-        ReflectionTestUtils.setField(task, "title", "title");
-        ReflectionTestUtils.setField(task, "content", "content");
-        ReflectionTestUtils.setField(task, "registrantName", "registrantName");
-        ReflectionTestUtils.setField(task, "createdAt", LocalDateTime.now());
+        List<Task> taskList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Task task = new Task();
+            ReflectionTestUtils.setField(task, "project", savedProject);
+            ReflectionTestUtils.setField(task, "title", "title" + i);
+            ReflectionTestUtils.setField(task, "content", "content");
+            ReflectionTestUtils.setField(task, "registrantName", "registrantName");
+            ReflectionTestUtils.setField(task, "createdAt", LocalDateTime.now());
+            taskList.add(task);
+        }
 
-        Task savedTask = taskRepository.saveAndFlush(task);
+        taskRepository.saveAllAndFlush(taskList);
 
-        Task findTask = taskRepository.findByProject_Id(savedProject.getId())
-                                   .orElseThrow(TaskNotFoundException::new);
+        List<Task> tasks = taskRepository.findByProject_Id(savedProject.getId());
 
-        assertThat(findTask.getProject().getId()).isEqualTo(savedProject.getId());
-
+        tasks
+            .forEach(task -> assertThat(task.getProject().getId()).isEqualTo(savedProject.getId()));
     }
+
+
 
 }

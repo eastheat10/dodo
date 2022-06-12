@@ -3,7 +3,6 @@ package com.nhnacademy.taskapi.dto.response.task;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneResponse;
 import com.nhnacademy.taskapi.dto.response.tag.TagResponse;
 import com.nhnacademy.taskapi.entity.Task;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
@@ -19,13 +18,13 @@ public class TaskResponse {
     private final List<CommentResponse> comments;
 
     public TaskResponse(Task task, MilestoneResponse milestone, List<TagResponse> tags,
-                        List<PersonResponse> persons, List<CommentResponse> comments) {
+                        List<PersonResponse> people, List<CommentResponse> comments) {
         this.title = task.getTitle();
         this.content = task.getContent();
         this.registrantName = task.getRegistrantName();
         this.milestone = milestone;
         this.tags = tags;
-        this.persons = persons;
+        this.persons = people;
         this.comments = comments;
     }
 }

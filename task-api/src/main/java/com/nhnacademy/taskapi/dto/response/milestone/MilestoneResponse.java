@@ -1,11 +1,7 @@
 package com.nhnacademy.taskapi.dto.response.milestone;
 
-import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
 import com.nhnacademy.taskapi.entity.Milestone;
-import com.nhnacademy.taskapi.entity.Project;
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CreateTaskRequest {
+public class ModifyTaskRequest {
 
     @NotBlank
-    private Long projectId;
+    private Long taskId;
 
     private Long milestoneId;
 
@@ -19,9 +19,6 @@ public class CreateTaskRequest {
 
     @NotBlank
     private String content;
-
-    @NotBlank
-    private String registrantName;
 
     private List<Long> tags;
     private List<Long> people; // 담당자

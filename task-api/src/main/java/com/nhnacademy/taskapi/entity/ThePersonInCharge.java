@@ -12,10 +12,12 @@ import javax.persistence.MapsId;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "The_person_in_charge")
+@Getter
 @NoArgsConstructor
 public class ThePersonInCharge {
 
@@ -23,8 +25,8 @@ public class ThePersonInCharge {
     private Pk id;
 
     @MapsId("taskId")
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "task_id")
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
     public ThePersonInCharge(Task task, Long memberId) {
@@ -40,7 +42,7 @@ public class ThePersonInCharge {
 
         private Long taskId;
 
-        @Column(name = "member_id")
+        @Column(name = "member_id", nullable = false)
         private Long memberId;
     }
 }

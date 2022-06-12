@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.entity;
 
 import com.nhnacademy.taskapi.dto.request.task.CreateTaskRequest;
+import com.nhnacademy.taskapi.dto.request.task.ModifyTaskRequest;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +54,12 @@ public class Task {
         this.title = request.getTitle();
         this.content = request.getContent();
         this.registrantName = request.getRegistrantName();
-        this.createdAt = request.getCreatedAt();
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void modifyTask(Milestone milestone, ModifyTaskRequest request) {
+        this.milestone = milestone;
+        this.title = request.getTitle();
+        this.content = request.getContent();
     }
 }
