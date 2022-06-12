@@ -6,6 +6,7 @@ import com.nhnacademy.taskapi.entity.ProjectStatus;
 import java.time.LocalDate;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,9 +22,11 @@ class ProjectRepositoryTest {
     ProjectMembersRepository projectMemberRepository;
 
     @Test
+    @DisplayName("username으 프로젝트 조회")
     void findProjectByMemberId() {
 
         Long memberId = 1L;
+        String username = "username1";
 
         for (int i = 0; i < 10; i++) {
 
@@ -38,11 +41,11 @@ class ProjectRepositoryTest {
 
             Project savedProject = projectRepository.save(project);
 
-            ProjectMember projectMember = new ProjectMember(savedProject, memberId, "username1");
+            ProjectMember projectMember = new ProjectMember(savedProject, memberId, username);
             projectMemberRepository.save(projectMember);
         }
 
-        List<Project> projects = projectRepository.findProjectByMemberId(memberId);
+        List<Project> projects = projectRepository.findProjectByUsername(username);
 
         Assertions.assertThat(projects.size()).isEqualTo(10);
     }
