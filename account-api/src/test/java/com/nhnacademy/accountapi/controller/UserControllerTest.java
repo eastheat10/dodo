@@ -103,7 +103,6 @@ class UserControllerTest {
 
         UserLoginRequest loginRequest = new UserLoginRequest();
         ReflectionTestUtils.setField(loginRequest, "username", username);
-        ReflectionTestUtils.setField(loginRequest, "password", password);
 
         User user = User.builder()
                         .username(username)
@@ -133,7 +132,6 @@ class UserControllerTest {
         UserLoginRequest request = new UserLoginRequest();
 
         ReflectionTestUtils.setField(request, "username", username);
-        ReflectionTestUtils.setField(request, "password", password);
 
         given(userService.doLogin(any())).willThrow(LoginUserNotFoundException.class);
 
