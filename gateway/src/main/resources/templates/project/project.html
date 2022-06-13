@@ -7,8 +7,13 @@
 <h1 th:text="${project.name}">Project Name</h1>
 <span th:text="${project.startDate}">Start Date</span> ~
 <span th:text="${project.endDate}">End Date</span>
+<br/>
 
-<a href="/tasks/create">업무 생성</a>
+<a th:href="@{|${project.id}/tasks/create|}">업무 생성</a><br />
+<a th:href="@{|${project.id}/milestones/create|}">마일스톤 생성</a><br />
+<a th:href="@{|${project.id}/milestones/list|}">마일스톤 목록</a><br />
+<a href="/tags/create">태그 생성</a><br />
+<a href="/tags/list">태그 생성</a><br />
 
 <table>
     <thead>

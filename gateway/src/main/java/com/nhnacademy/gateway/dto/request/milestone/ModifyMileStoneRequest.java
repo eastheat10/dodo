@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ModifyMileStoneRequest {
 
     private Long id;
-    private String milestoneName;
+    private String name;
     private LocalDate startDate;
     private LocalDate endDate;
 }

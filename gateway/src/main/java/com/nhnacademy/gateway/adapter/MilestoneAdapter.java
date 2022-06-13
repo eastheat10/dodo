@@ -4,7 +4,7 @@ import static com.nhnacademy.gateway.adapter.AdapterTemplate.*;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import com.nhnacademy.gateway.dto.request.milestone.CreateMileStoneRequest;
+import com.nhnacademy.gateway.dto.request.milestone.CreateMilestoneRequest;
 import com.nhnacademy.gateway.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.gateway.dto.response.milestone.MilestoneResponse;
 import java.util.List;
@@ -24,7 +24,7 @@ public class MilestoneAdapter {
 
     private final RestTemplate restTemplate;
 
-    public void createMilestone(CreateMileStoneRequest createRequest) {
+    public void createMilestone(CreateMilestoneRequest createRequest) {
 
         create(restTemplate, MILESTONES, createRequest);
     }
@@ -44,6 +44,28 @@ public class MilestoneAdapter {
         verifyCode(exchange.getStatusCode());
 
         return exchange.getBody();
+    }
+
+    public List<MilestoneResponse> findMilestonesByProjectId(Long projectId) {
+
+        AdapterTemplate<List<MilestoneResponse>> template = AdapterTemplate.of();
+        return template.find(restTemplate, MILESTONES + "/project/" + projectId);
+
+//        final String PATH = "/project/" + projectId;
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(List.of(APPLICATION_JSON));
+//
+//        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<List<MilestoneResponse>> exchange =
+//            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
+//                new ParameterizedTypeReference<>() {
+//                });
+//
+//        verifyCode(exchange.getStatusCode());
+//
+//        return exchange.getBody();
     }
 
     public void modifyMilestone(ModifyMileStoneRequest modifyRequest) {
