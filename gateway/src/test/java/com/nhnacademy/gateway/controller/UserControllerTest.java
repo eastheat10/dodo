@@ -9,10 +9,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import com.nhnacademy.gateway.service.UserSignUpService;
+import com.nhnacademy.gateway.service.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,7 +27,7 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserSignUpService userSignUpService;
+    private UserService userService;
 
     private final String username = "username";
     private final String password = "password";
@@ -36,23 +37,25 @@ class UserControllerTest {
     @DisplayName("회원가입")
     void testDoSignup() throws Exception {
 
-        mockMvc.perform(post("/users/signup")
+        mockMvc.perform(post("/signup")
                    .param("username", username)
                    .param("password", password)
                    .param("email", email)
                    .with(csrf()))
                .andExpect(status().is3xxRedirection());
 
-        doNothing().when(userSignUpService).requestSignup(any());
 
-        verify(userSignUpService, times(1)).requestSignup(any());
+        doNothing().when(userService).requestSignup(any());
+
+        verify(userService, times(1)).requestSignup(any());
     }
 
     @Test
     @DisplayName("회원가입 양식 오류")
     void testSignupFormError() throws Exception {
 
-        mockMvc.perform(post("/users/signup")
+
+        mockMvc.perform(post("/signup")
                    .param("username", "")
                    .param("password", "")
                    .param("email", "")

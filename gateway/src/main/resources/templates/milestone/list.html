@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ko">
+<head th:replace="/fragments/header :: html-head">
+
+</head>
+<body>
+
+<h1>MILESTONE LIST</h1>
+
+<a th:href="@{|/projects/${projectId}|}">TO PROJECT</a>
+<br />
+<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>이름</th>
+        <th>시작일</th>
+        <th>종료일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${milestones}">
+        <td th:text="${m.id}">번호</td>
+        <td class="move"
+            th:text="${m.name}"
+            th:onclick="'location.href=\'' + @{|/projects/${m.projectId}/milestones/${m.id}|} + '\''">
+            이름
+        </td>
+        <td th:if="${m.startDate == null}">-</td>
+        <td th:unless="${m.startDate == null}" th:text="${m.startDate}">시작일</td>
+        <td th:if="${m.endDate == null}">-</td>
+        <td th:unless="${m.endDate == null}" th:text="${m.endDate}">종료일</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.nhnacademy.gateway.security.handler;
 
+import com.nhnacademy.gateway.dto.CustomUser;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -27,23 +28,30 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
                                         Authentication authentication)
         throws ServletException, IOException {
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
+        log.error("go in handler");
+
+        CustomUser user = (CustomUser) authentication.getPrincipal();
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>(user.getAuthorities());
 
         HttpSession session = request.getSession(true);
-        session.setAttribute("userId", userDetails.getUsername());
+        session.setAttribute("username", user.getUsername());
 
         Cookie cookie = new Cookie("SESSION", session.getId());
         cookie.setHttpOnly(true);
         cookie.setMaxAge(daysToSec(3));
         response.addCookie(cookie);
 
-        redisTemplate.opsForHash().put(session.getId(), "userId", userDetails.getUsername());
+
+        redisTemplate.opsForHash().put(session.getId(), "username", user.getUsername());
+        redisTemplate.opsForHash().put(session.getId(), "id", String.valueOf(user.getId()));
+
         redisTemplate.opsForHash()
                      .put(session.getId(), "authority", authorities.get(0).getAuthority());
         redisTemplate.boundHashOps(session.getId()).expire(Duration.ofDays(3));
 
-        log.info("login success user = {}", userDetails.getUsername());
+        log.info("login success user = {}", user.getUsername());
+
+        response.sendRedirect("/");
     }
 
     private int daysToSec(int day) {

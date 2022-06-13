@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="/fragments/header :: html-head">
+</head>
+<body>
+
+<h1>업무 생성</h1>
+
+<form th:action="@{${url}}" method="POST" th:object="${task}">
+    <input type="hidden" name="projectId" th:value="${projectId}" />
+    <input th:if="${url eq 'modify'}" type="hidden" name="taskId" th:value="${task.id}" />
+
+    <label th:if="${url eq 'create'}">
+        마일스톤 <br/>
+        <select th:field="*{milestoneId}">
+            <option value="">마일스톤 선택</option>
+            <option th:each="m : ${milestones}" th:value="${m.id}"
+                    th:text="${m.name}">Milestone name
+            </option>
+        </select>
+    </label>
+    <label th:if="${url eq 'modify'}">
+        마일스톤 <br/>
+        <select th:value="*{milestone.id}" name="milestoneId">
+            <option value="">마일스톤 선택</option>
+            <option th:each="m : ${milestones}" th:value="${m.id}"
+                    th:text="${m.name}" th:selected="${m.id eq task.milestone.id}">Milestone name
+            </option>
+        </select>
+    </label>
+
+
+    <div style="width: 100px">
+        <div>태그</div>
+        <div th:each="t : ${tagList}">
+            <input type="checkbox" th:field="*{tags}" th:value="${t.id}" />
+            <label th:for="${#ids.prev('tags')}" th:text="${t.name}">태그이름</label>
+        </div>
+    </div>
+
+    <input type="text" th:field="*{title}" placeholder="TITLE"/>
+    <br/><br/>
+
+    <textarea th:field="*{content}" placeholder="CONTENT"></textarea>
+    <br/><br/>
+
+
+    <input type="hidden" name="registrantName" th:value="${username}" />
+
+    <input type="submit" value="SUBMIT">
+</form>
+
+</body>
+</html>

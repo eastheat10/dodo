@@ -1,6 +1,9 @@
 package com.nhnacademy.gateway.config;
 
 import com.nhnacademy.gateway.security.handler.LoginSuccessHandler;
+import com.nhnacademy.gateway.service.user.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -25,6 +29,27 @@ public class SecurityConfig {
 
         http
             .authorizeRequests()
+            .antMatchers("/", "/login", "/signup", "/users/login").permitAll()
+            .antMatchers("/projects/**").authenticated()
+            .and();
+
+        http
+            .formLogin()
+            .defaultSuccessUrl("/", true)
+            .loginPage("/users/login")
+            .usernameParameter("username")
+            .passwordParameter("password")
+            .successHandler(loginSuccessHandler(null))
+            .loginProcessingUrl("/login")
+            .and();
+
+        http
+            .logout()
+            .logoutSuccessUrl("/")
+            .clearAuthentication(true)
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
+            .and();
             .antMatchers("/", "/login", "/signup").permitAll();
 
         http
@@ -43,11 +68,15 @@ public class SecurityConfig {
             .headers()
             .defaultsDisabled()
             .frameOptions()
+            .sameOrigin()
+            .and();
+
+        http
+            .csrf();
             .sameOrigin();
 
         http
-            .csrf()
-            .disable();
+            .csrf();
 
         return http.build();
     }
@@ -60,8 +89,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
-                                                         PasswordEncoder passwordEncoder) {
+    public AuthenticationProvider authenticationProvider(
+        CustomUserDetailsService userDetailsService,
+        PasswordEncoder passwordEncoder) {
 
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);

@@ -2,5 +2,13 @@ spring:
   profiles:
     include: oauth, redis
 
+  mvc:
+    static-path-pattern: "/static/**"
+
 server:
   port: 8080
+
+#logging:
+#  level:
+#    root: debug
+
