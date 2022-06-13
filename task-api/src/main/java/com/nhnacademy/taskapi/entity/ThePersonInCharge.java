@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "The_person_in_charge")
+@Table(name = "The_person_in_charges")
 @Getter
 @NoArgsConstructor
 public class ThePersonInCharge {

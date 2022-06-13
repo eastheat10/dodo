@@ -53,7 +53,9 @@ public class MilestoneController {
 
         MilestoneResponse milestone = milestoneService.findMilestone(id);
 
-        return null;
+        return ResponseEntity.status(OK)
+                             .contentType(APPLICATION_JSON)
+                             .body(milestone);
     }
 
     @PutMapping

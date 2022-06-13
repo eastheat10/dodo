@@ -5,14 +5,12 @@ import static org.springframework.http.MediaType.*;
 
 import com.nhnacademy.taskapi.dto.request.task.CreateTaskRequest;
 import com.nhnacademy.taskapi.dto.request.task.ModifyTaskRequest;
-import com.nhnacademy.taskapi.dto.request.task.TaskListResponse;
+import com.nhnacademy.taskapi.dto.response.task.TaskListResponse;
 import com.nhnacademy.taskapi.dto.response.task.TaskResponse;
 import com.nhnacademy.taskapi.service.TaskService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

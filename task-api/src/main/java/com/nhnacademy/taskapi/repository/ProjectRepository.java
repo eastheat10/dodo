@@ -12,7 +12,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(
         "SELECT p " +
         "FROM Project p " +
-        "   JOIN ProjectMember m " +
+        "   LEFT JOIN ProjectMember m " +
         "      ON p.id = m.project.id " +
         "WHERE m.username = :username"
     )

@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 public class TaskResponse {
 
+    private final Long id;
     private final String title;
     private final String content;
     private final String registrantName;
@@ -19,6 +20,7 @@ public class TaskResponse {
 
     public TaskResponse(Task task, MilestoneResponse milestone, List<TagResponse> tags,
                         List<PersonResponse> people, List<CommentResponse> comments) {
+        this.id = task.getId();
         this.title = task.getTitle();
         this.content = task.getContent();
         this.registrantName = task.getRegistrantName();

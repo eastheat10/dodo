@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 import com.nhnacademy.taskapi.dto.request.task.CreateTaskRequest;
 import com.nhnacademy.taskapi.dto.request.task.ModifyTaskRequest;
-import com.nhnacademy.taskapi.dto.request.task.TaskListResponse;
+import com.nhnacademy.taskapi.dto.response.task.TaskListResponse;
 import com.nhnacademy.taskapi.dto.response.task.TaskResponse;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.ProjectStatus;

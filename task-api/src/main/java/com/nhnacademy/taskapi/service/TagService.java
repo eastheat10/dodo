@@ -40,13 +40,21 @@ public class TagService {
                    .collect(toList());
     }
 
+    public TagResponse findById(Long id) {
+
+        Tag tag = tagRepository.findById(id)
+                               .orElseThrow(TagNotfoundException::new);
+
+        return new TagResponse(tag);
+    }
+
     @Transactional
     public void modifyTag(ModifyTagRequest modifyTagRequest) {
 
         Tag tag = tagRepository.findById(modifyTagRequest.getId())
                                .orElseThrow(TagNotfoundException::new);
 
-        tag.modifyTag(modifyTagRequest.getTagName());
+        tag.modifyTag(modifyTagRequest.getName());
     }
 
     @Transactional

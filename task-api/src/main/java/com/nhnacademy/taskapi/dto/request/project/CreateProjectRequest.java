@@ -17,4 +17,6 @@ public class CreateProjectRequest {
 
     @NotBlank
     private String projectName;
+
+    private String content;
 }

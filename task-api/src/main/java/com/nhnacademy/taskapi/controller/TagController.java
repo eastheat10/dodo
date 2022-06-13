@@ -36,7 +36,7 @@ public class TagController {
                              .build();
     }
 
-    @GetMapping("/{projectId}")
+    @GetMapping("/project/{projectId}")
     public ResponseEntity<List<TagResponse>> findTagsByProjectId(@PathVariable Long projectId) {
 
         List<TagResponse> tags = tagService.findTagsByProjectId(projectId);
@@ -46,6 +46,15 @@ public class TagController {
                              .body(tags);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TagResponse> findTag(@PathVariable Long id) {
+
+        TagResponse tag = tagService.findById(id);
+
+        return ResponseEntity.status(OK)
+                             .contentType(APPLICATION_JSON)
+                             .body(tag);
+    }
     @PutMapping
     public ResponseEntity<Void> modifyTag(@Valid @RequestBody ModifyTagRequest modifyRequest) {
 

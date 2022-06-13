@@ -4,17 +4,22 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
 import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import com.nhnacademy.taskapi.dto.response.milestone.MilestoneResponse;
+import com.nhnacademy.taskapi.entity.Milestone;
+import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.service.MilestoneService;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,7 +52,7 @@ class MilestoneControllerTest {
 
         CreateMileStoneRequest createRequest = new CreateMileStoneRequest();
         ReflectionTestUtils.setField(createRequest, "projectId", 1L);
-        ReflectionTestUtils.setField(createRequest, "milestoneName", "milestone name");
+        ReflectionTestUtils.setField(createRequest, "name", "milestone name");
         ReflectionTestUtils.setField(createRequest, "startDate", LocalDate.now());
 
         String jsonRequest =
@@ -82,10 +87,15 @@ class MilestoneControllerTest {
 
         Long id = 1L;
 
-        when(milestoneService.findMilestone(anyLong())).thenReturn(mock(MilestoneResponse.class));
+        Milestone milestone = spy(new Milestone());
+        when(milestone.getProject()).thenReturn(new Project());
+        MilestoneResponse milestoneResponse = new MilestoneResponse(milestone);
+
+        when(milestoneService.findMilestone(id)).thenReturn(milestoneResponse);
 
         mockMvc.perform(get("/milestones/{id}", id)
                    .accept(APPLICATION_JSON))
+               .andExpect(content().contentType(APPLICATION_JSON))
                .andExpect(status().isOk());
 
         verify(milestoneService, times(1)).findMilestone(id);
@@ -98,7 +108,7 @@ class MilestoneControllerTest {
         ModifyMileStoneRequest modifyRequest = new ModifyMileStoneRequest();
 
         ReflectionTestUtils.setField(modifyRequest, "id", 1L);
-        ReflectionTestUtils.setField(modifyRequest, "milestoneName", "milestone name");
+        ReflectionTestUtils.setField(modifyRequest, "name", "milestone name");
         ReflectionTestUtils.setField(modifyRequest, "startDate", LocalDate.now());
         ReflectionTestUtils.setField(modifyRequest, "endDate", LocalDate.now().plusDays(1L));
 
@@ -110,7 +120,8 @@ class MilestoneControllerTest {
         mockMvc.perform(put("/milestones")
                    .contentType(APPLICATION_JSON)
                    .content(jsonRequest))
-               .andExpect(status().isOk());
+               .andExpect(status().isOk())
+            .andDo(print());
 
         verify(milestoneService, times(1)).modifyMilestone(any(modifyRequest.getClass()));
     }

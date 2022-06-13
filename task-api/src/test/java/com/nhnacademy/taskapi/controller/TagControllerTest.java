@@ -72,7 +72,7 @@ class TagControllerTest {
 
         when(tagService.findTagsByProjectId(projectId)).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/tags/{projectId}", projectId)
+        mockMvc.perform(get("/tags/project/{projectId}", projectId)
                    .accept(APPLICATION_JSON))
                .andExpect(content().contentType(APPLICATION_JSON))
                .andExpect(status().isOk());
@@ -86,7 +86,7 @@ class TagControllerTest {
 
         ModifyTagRequest modifyRequest = new ModifyTagRequest();
         ReflectionTestUtils.setField(modifyRequest, "id", 1L);
-        ReflectionTestUtils.setField(modifyRequest, "tagName", "tag name");
+        ReflectionTestUtils.setField(modifyRequest, "name", "tag name");
 
         String jsonRequest =
             mapper.writerWithDefaultPrettyPrinter().writeValueAsString(modifyRequest);

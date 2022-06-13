@@ -14,7 +14,7 @@ public class CreateMileStoneRequest {
     private Long projectId;
 
     @NotBlank
-    private String milestoneName;
+    private String name;
 
     private LocalDate startDate;
     private LocalDate endDate;

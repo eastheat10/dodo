@@ -37,6 +37,9 @@ public class Project {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String content;
+
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
@@ -48,6 +51,7 @@ public class Project {
         this.adminUsername = request.getAdminUsername();
         this.status = ProjectStatus.PROGRESS;
         this.name = request.getProjectName();
+        this.content = request.getContent();
         this.startDate = LocalDate.now();
     }
 

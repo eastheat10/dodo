@@ -14,7 +14,7 @@ public class ModifyMileStoneRequest {
     private Long id;
 
     @NotBlank
-    private String milestoneName;
+    private String name;
 
     private LocalDate startDate;
     private LocalDate endDate;
