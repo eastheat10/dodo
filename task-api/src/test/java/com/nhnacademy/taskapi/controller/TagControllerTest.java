@@ -1,8 +1,9 @@
 package com.nhnacademy.taskapi.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,12 +13,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.dto.request.tag.CreateTagRequest;
 import com.nhnacademy.taskapi.dto.request.tag.ModifyTagRequest;
-import com.nhnacademy.taskapi.service.ProjectService;
+import com.nhnacademy.taskapi.exception.TagNotfoundException;
 import com.nhnacademy.taskapi.service.TagService;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -113,5 +114,32 @@ class TagControllerTest {
                .andExpect(status().isNoContent());
 
         verify(tagService, times(1)).deleteTag(tagId);
+    }
+
+    @Test
+    @DisplayName("Tag 잘못 접근")
+    void testWrongAccess() throws Exception {
+
+        doThrow(TagNotfoundException.class).when(tagService).deleteTag(1L);
+
+        mockMvc.perform(delete("/tags/{id}", 1L))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("not found")));
+    }
+
+    @Test
+    @DisplayName("잘못된 양식")
+    void testWrongFormat() throws Exception {
+
+        CreateTagRequest createRequest = new CreateTagRequest();
+
+        String jsonRequest = mapper.writerWithDefaultPrettyPrinter()
+                                   .writeValueAsString(createRequest);
+
+        mockMvc.perform(post("/tags")
+                   .contentType(APPLICATION_JSON)
+                   .content(jsonRequest))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("valid")));
     }
 }

@@ -1,6 +1,8 @@
 package com.nhnacademy.taskapi.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.*;
@@ -10,11 +12,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nhnacademy.taskapi.dto.request.tag.CreateTagRequest;
 import com.nhnacademy.taskapi.dto.request.task.CreateTaskRequest;
 import com.nhnacademy.taskapi.dto.request.task.ModifyTaskRequest;
+import com.nhnacademy.taskapi.exception.TagNotfoundException;
 import com.nhnacademy.taskapi.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -125,5 +130,32 @@ class TaskControllerTest {
                .andExpect(status().isNoContent());
 
         verify(taskService, times(1)).deleteTask(id);
+    }
+
+    @Test
+    @DisplayName("Task 잘못 접근")
+    void testWrongAccess() throws Exception {
+
+        doThrow(TagNotfoundException.class).when(taskService).deleteTask(1L);
+
+        mockMvc.perform(delete("/tasks/{id}", 1L))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("not found")));
+    }
+
+    @Test
+    @DisplayName("잘못된 양식")
+    void testWrongFormat() throws Exception {
+
+        CreateTagRequest createRequest = new CreateTagRequest();
+
+        String jsonRequest = mapper.writerWithDefaultPrettyPrinter()
+                                   .writeValueAsString(createRequest);
+
+        mockMvc.perform(post("/tasks")
+                   .contentType(APPLICATION_JSON)
+                   .content(jsonRequest))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("valid")));
     }
 }

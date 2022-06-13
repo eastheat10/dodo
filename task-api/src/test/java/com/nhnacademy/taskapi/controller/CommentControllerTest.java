@@ -1,15 +1,21 @@
 package com.nhnacademy.taskapi.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.taskapi.dto.request.comment.CreateCommentRequest;
 import com.nhnacademy.taskapi.dto.request.comment.ModifyCommentRequest;
+import com.nhnacademy.taskapi.exception.CommentNotFoundException;
 import com.nhnacademy.taskapi.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,5 +88,32 @@ class CommentControllerTest {
                .andExpect(status().isNoContent());
 
         verify(commentService, times(1)).deleteComment(commentId);
+    }
+
+    @Test
+    @DisplayName("Comment 잘못 접근")
+    void testWrongAccess() throws Exception {
+
+        doThrow(CommentNotFoundException.class).when(commentService).deleteComment(1L);
+
+        mockMvc.perform(delete("/comments/{id}", 1L))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("not found")));
+    }
+
+    @Test
+    @DisplayName("잘못된 양식")
+    void testWrongFormat() throws Exception {
+
+        CreateCommentRequest createRequest = new CreateCommentRequest();
+
+        String jsonRequest = mapper.writerWithDefaultPrettyPrinter()
+                                   .writeValueAsString(createRequest);
+
+        mockMvc.perform(post("/comments")
+                   .contentType(APPLICATION_JSON)
+                   .content(jsonRequest))
+               .andExpect(status().isBadRequest())
+               .andExpect(jsonPath("$.type", equalTo("valid")));
     }
 }
