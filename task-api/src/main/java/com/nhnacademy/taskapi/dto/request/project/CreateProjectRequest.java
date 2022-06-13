@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ProjectCreateRequest {
+public class CreateProjectRequest {
 
     @NotNull
     private Long adminId;
@@ -17,4 +17,6 @@ public class ProjectCreateRequest {
 
     @NotBlank
     private String projectName;
+
+    private String content;
 }

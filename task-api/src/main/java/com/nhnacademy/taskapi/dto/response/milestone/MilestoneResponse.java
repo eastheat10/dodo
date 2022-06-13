@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.dto.response.milestone;
 
-import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
+import com.nhnacademy.taskapi.entity.Milestone;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,9 +15,9 @@ public class MilestoneResponse {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public MilestoneResponse(MilestoneDto milestone) {
+    public MilestoneResponse(Milestone milestone) {
         this.id = milestone.getId();
-        this.projectId = milestone.getId();
+        this.projectId = milestone.getProject().getId();
         this.name = milestone.getName();
         this.startDate = milestone.getStartDate();
         this.endDate = milestone.getEndDate();

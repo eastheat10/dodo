@@ -2,7 +2,6 @@ package com.nhnacademy.taskapi.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.nhnacademy.taskapi.dto.projection.MilestoneDto;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.ProjectStatus;
@@ -33,6 +32,8 @@ class MilestoneRepositoryTest {
 
         ReflectionTestUtils.setField(project, "id", 99L);
         ReflectionTestUtils.setField(project, "adminId", 99L);
+        ReflectionTestUtils.setField(project, "adminUsername", "admin");
+        ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());
 
@@ -50,10 +51,12 @@ class MilestoneRepositoryTest {
 
         milestoneRepository.saveAll(list);
 
-        List<MilestoneDto> milestones =
-            milestoneRepository.findMilestoneByProjectId(savedProject.getId());
+        System.out.println("\n==== SELECT ====\n");
 
-        milestones.forEach(m -> assertThat(m.getProjectId()).isEqualTo(savedProject.getId()));
+        List<Milestone> milestones =
+            milestoneRepository.findMilestoneByProject_Id(savedProject.getId());
+
+        milestones.forEach(m -> assertThat(m.getProject().getId()).isEqualTo(savedProject.getId()));
     }
 
     @Test
@@ -64,23 +67,25 @@ class MilestoneRepositoryTest {
 
         ReflectionTestUtils.setField(project, "id", 99L);
         ReflectionTestUtils.setField(project, "adminId", 99L);
+        ReflectionTestUtils.setField(project, "adminUsername", "admin");
+        ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());
 
         Project savedProject = projectRepository.save(project);
-
 
         Milestone milestone = new Milestone();
         ReflectionTestUtils.setField(milestone, "project", savedProject);
         ReflectionTestUtils.setField(milestone, "name", "milestone");
         ReflectionTestUtils.setField(milestone, "startDate", LocalDate.now());
 
-        milestoneRepository.save(milestone);
+        Milestone savedMilestone = milestoneRepository.saveAndFlush(milestone);
 
-        MilestoneDto milestoneDto = milestoneRepository.findMilestoneById(1L)
-                                                       .orElseThrow(
-                                                           MilestoneNotFoundException::new);
+        System.out.println("\n==== SELECT ====\n");
 
-        assertThat(milestoneDto.getId()).isEqualTo(1L);
+        Milestone findMilestone = milestoneRepository.findById(savedMilestone.getId())
+                                                     .orElseThrow(MilestoneNotFoundException::new);
+
+        assertThat(findMilestone.getId()).isEqualTo(savedMilestone.getId());
     }
 }

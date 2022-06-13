@@ -11,9 +11,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.nhnacademy.taskapi.dto.request.project.AddProjectMemberRequest;
-import com.nhnacademy.taskapi.dto.request.project.ProjectCreateRequest;
+import com.nhnacademy.taskapi.dto.request.project.CreateProjectRequest;
 import com.nhnacademy.taskapi.entity.Project;
-import com.nhnacademy.taskapi.entity.ProjectMembers;
+import com.nhnacademy.taskapi.entity.ProjectMember;
 import com.nhnacademy.taskapi.entity.ProjectStatus;
 import com.nhnacademy.taskapi.repository.ProjectMembersRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
@@ -42,20 +42,20 @@ class ProjectServiceTest {
     @DisplayName("새로운 프로젝트 생성")
     void testCreateProject() {
 
-        ProjectCreateRequest request = new ProjectCreateRequest();
+        CreateProjectRequest request = new CreateProjectRequest();
 
         ReflectionTestUtils.setField(request, "adminId", 1L);
         ReflectionTestUtils.setField(request, "adminUsername", "username");
         ReflectionTestUtils.setField(request, "projectName", "project1");
 
         when(projectRepository.save(any(Project.class))).thenReturn(mock(Project.class));
-        when(projectMembersRepository.save(any(ProjectMembers.class)))
-            .thenReturn(mock(ProjectMembers.class));
+        when(projectMembersRepository.save(any(ProjectMember.class)))
+            .thenReturn(mock(ProjectMember.class));
 
         projectService.createProject(request);
 
         verify(projectRepository, times(1)).save(any(Project.class));
-        verify(projectMembersRepository, times(1)).save(any(ProjectMembers.class));
+        verify(projectMembersRepository, times(1)).save(any(ProjectMember.class));
     }
 
     @Test

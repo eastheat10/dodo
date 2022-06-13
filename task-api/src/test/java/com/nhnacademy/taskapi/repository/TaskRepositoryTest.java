@@ -4,26 +4,30 @@ import static org.assertj.core.api.Assertions.*;
 
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.ProjectStatus;
-import com.nhnacademy.taskapi.entity.Tag;
+import com.nhnacademy.taskapi.entity.Task;
+import com.nhnacademy.taskapi.exception.TaskNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @DataJpaTest
-class TagRepositoryTest {
+class TaskRepositoryTest {
 
     @Autowired
-    private TagRepository tagRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     private ProjectRepository projectRepository;
 
     @Test
-    void findTagsByProjectId() {
+    @DisplayName("프로젝트 아이디로 업무 조회")
+    void testFindTaskByProjectId() {
 
         Project project = new Project();
 
@@ -36,22 +40,25 @@ class TagRepositoryTest {
 
         Project savedProject = projectRepository.save(project);
 
-        List<Tag> list = new ArrayList<>();
-
-        for (int i = 1; i <= 10; i++) {
-            Tag tag = new Tag();
-            ReflectionTestUtils.setField(tag, "project", savedProject);
-            ReflectionTestUtils.setField(tag, "name", "tag" + i);
-            list.add(tag);
+        List<Task> taskList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Task task = new Task();
+            ReflectionTestUtils.setField(task, "project", savedProject);
+            ReflectionTestUtils.setField(task, "title", "title" + i);
+            ReflectionTestUtils.setField(task, "content", "content");
+            ReflectionTestUtils.setField(task, "registrantName", "registrantName");
+            ReflectionTestUtils.setField(task, "createdAt", LocalDateTime.now());
+            taskList.add(task);
         }
 
-        tagRepository.saveAll(list);
+        taskRepository.saveAllAndFlush(taskList);
 
-        System.out.println("======");
+        List<Task> tasks = taskRepository.findByProject_Id(savedProject.getId());
 
-        List<Tag> tag = tagRepository.findTagsByProject_id(savedProject.getId());
-
-        tag.forEach(t -> assertThat(t.getProject().getId()).isEqualTo(project.getId()));
-        assertThat(tag.size()).isEqualTo(10);
+        tasks
+            .forEach(task -> assertThat(task.getProject().getId()).isEqualTo(savedProject.getId()));
     }
+
+
+
 }

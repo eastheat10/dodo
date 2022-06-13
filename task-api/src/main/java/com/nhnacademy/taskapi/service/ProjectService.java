@@ -3,9 +3,10 @@ package com.nhnacademy.taskapi.service;
 import static java.util.stream.Collectors.*;
 
 import com.nhnacademy.taskapi.dto.request.project.AddProjectMemberRequest;
-import com.nhnacademy.taskapi.dto.request.project.ProjectCreateRequest;
+import com.nhnacademy.taskapi.dto.request.project.CreateProjectRequest;
+import com.nhnacademy.taskapi.dto.response.project.ProjectResponse;
 import com.nhnacademy.taskapi.entity.Project;
-import com.nhnacademy.taskapi.entity.ProjectMembers;
+import com.nhnacademy.taskapi.entity.ProjectMember;
 import com.nhnacademy.taskapi.exception.ProjectNotFoundException;
 import com.nhnacademy.taskapi.repository.ProjectMembersRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
@@ -24,14 +25,30 @@ public class ProjectService {
     private final ProjectMembersRepository projectMembersRepository;
 
     @Transactional
-    public void createProject(ProjectCreateRequest createRequest) {
+    public void createProject(CreateProjectRequest createRequest) {
 
         Project createdProject = projectRepository.save(new Project(createRequest));
 
-        ProjectMembers projectMembers =
-            new ProjectMembers(createdProject, createdProject.getId(), createdProject.getName());
+        ProjectMember projectMember =
+            new ProjectMember(createdProject, createdProject.getId(), createdProject.getAdminUsername());
 
-        projectMembersRepository.save(projectMembers);
+        projectMembersRepository.save(projectMember);
+    }
+
+    public List<ProjectResponse> findProjectByMemberId(String username) {
+
+        return projectRepository.findProjectByUsername(username)
+                                .stream()
+                                .map(ProjectResponse::new)
+                                .collect(toList());
+    }
+
+    public ProjectResponse findProject(Long id) {
+
+        Project project = projectRepository.findById(id)
+                                           .orElseThrow(ProjectNotFoundException::new);
+
+        return new ProjectResponse(project);
     }
 
     @Transactional
@@ -40,10 +57,10 @@ public class ProjectService {
         Project project = projectRepository.findById(addMemberRequest.getProjectId())
                                            .orElseThrow(ProjectNotFoundException::new);
 
-        List<ProjectMembers> projectMembers =
+        List<ProjectMember> projectMembers =
             addMemberRequest.getMemberInfoList()
                             .stream()
-                            .map(info -> new ProjectMembers(project, info))
+                            .map(info -> new ProjectMember(project, info))
                             .collect(toList());
 
         projectMembersRepository.saveAll(projectMembers);

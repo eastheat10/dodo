@@ -1,5 +1,7 @@
 package com.nhnacademy.taskapi.dto.request.tag;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModifyTagRequest {
 
+    @NotNull
     private Long id;
-    private String tagName;
+
+    @NotBlank
+    private String name;
 }

@@ -1,6 +1,6 @@
 package com.nhnacademy.taskapi.entity;
 
-import com.nhnacademy.taskapi.dto.request.project.ProjectCreateRequest;
+import com.nhnacademy.taskapi.dto.request.project.CreateProjectRequest;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,24 +24,34 @@ public class Project {
     @Column(name = "project_id")
     private Long id;
 
-    @Column(name = "admin_id")
+    @Column(name = "admin_id", nullable = false)
     private Long adminId;
 
+    @Column(name = "admin_username", nullable = false)
+    private String adminUsername;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ProjectStatus status;
 
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "start_date")
+    @Column(nullable = false)
+    private String content;
+
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    public Project(ProjectCreateRequest request) {
+    public Project(CreateProjectRequest request) {
         this.adminId = request.getAdminId();
+        this.adminUsername = request.getAdminUsername();
         this.status = ProjectStatus.PROGRESS;
         this.name = request.getProjectName();
+        this.content = request.getContent();
         this.startDate = LocalDate.now();
     }
 

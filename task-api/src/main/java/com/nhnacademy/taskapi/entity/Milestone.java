@@ -1,7 +1,7 @@
 package com.nhnacademy.taskapi.entity;
 
-import com.nhnacademy.taskapi.dto.request.milestone.MileStoneCreateRequest;
-import com.nhnacademy.taskapi.dto.request.milestone.MileStoneModifyRequest;
+import com.nhnacademy.taskapi.dto.request.milestone.CreateMileStoneRequest;
+import com.nhnacademy.taskapi.dto.request.milestone.ModifyMileStoneRequest;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,15 +36,15 @@ public class Milestone {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    public Milestone(Project project, MileStoneCreateRequest request) {
+    public Milestone(Project project, CreateMileStoneRequest request) {
         this.project = project;
-        this.name = request.getMilestoneName();
+        this.name = request.getName();
         this.startDate = LocalDate.now();
         this.endDate = request.getEndDate();
     }
 
-    public void modifyMilestone(MileStoneModifyRequest modifyRequest) {
-        this.name = modifyRequest.getMilestoneName();
+    public void modifyMilestone(ModifyMileStoneRequest modifyRequest) {
+        this.name = modifyRequest.getName();
         this.startDate = modifyRequest.getStartDate();
         this.endDate = modifyRequest.getEndDate();
     }
