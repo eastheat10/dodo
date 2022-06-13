@@ -1,6 +1,7 @@
 package com.nhnacademy.gateway.adapter;
 
 import static com.nhnacademy.gateway.adapter.AdapterTemplate.BASE_URL;
+import static com.nhnacademy.gateway.adapter.AdapterTemplate.verifyCode;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -9,7 +10,6 @@ import com.nhnacademy.gateway.dto.request.tag.ModifyTagRequest;
 import com.nhnacademy.gateway.dto.response.tag.TagResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -32,22 +32,43 @@ public class TagAdapter {
 
     public List<TagResponse> findTagsByProjectId(Long projectId) {
 
-        final String PATH = "/" + projectId;
+        AdapterTemplate<List<TagResponse>> template = AdapterTemplate.of();
+        return template.find(restTemplate, TAGS + "/project/" + projectId);
+
+//        final String PATH = "/" + projectId;
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(List.of(APPLICATION_JSON));
+//
+//        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<List<TagResponse>> exchange =
+//            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
+//                new ParameterizedTypeReference<>() {
+//                });
+//
+//        AdapterTemplate.verifyCode(exchange.getStatusCode());
+//
+//        return exchange.getBody();
+    }
+
+    public TagResponse findById(Long id) {
+
+        final String PATH = "/" + id;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(APPLICATION_JSON));
 
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<TagResponse>> exchange =
-            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
-                new ParameterizedTypeReference<>() {
-                });
+        ResponseEntity<TagResponse> exchange =
+            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity, TagResponse.class);
 
-        AdapterTemplate.verifyCode(exchange.getStatusCode());
+        verifyCode(exchange.getStatusCode());
 
         return exchange.getBody();
     }
+
 
     public void modifyTag(ModifyTagRequest modifyRequest) {
 
@@ -58,4 +79,5 @@ public class TagAdapter {
 
         AdapterTemplate.delete(restTemplate, TAGS, id);
     }
+
 }

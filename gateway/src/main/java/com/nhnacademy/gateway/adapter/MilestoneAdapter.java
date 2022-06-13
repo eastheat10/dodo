@@ -50,22 +50,6 @@ public class MilestoneAdapter {
 
         AdapterTemplate<List<MilestoneResponse>> template = AdapterTemplate.of();
         return template.find(restTemplate, MILESTONES + "/project/" + projectId);
-
-//        final String PATH = "/project/" + projectId;
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(List.of(APPLICATION_JSON));
-//
-//        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-//
-//        ResponseEntity<List<MilestoneResponse>> exchange =
-//            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
-//                new ParameterizedTypeReference<>() {
-//                });
-//
-//        verifyCode(exchange.getStatusCode());
-//
-//        return exchange.getBody();
     }
 
     public void modifyMilestone(ModifyMileStoneRequest modifyRequest) {

@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<a th:href="@{list}">TO MILESTONE LIST</a>
+<a th:href="@{|/projects/${milestone.projectId}/milestones|}">TO MILESTONE LIST</a>
 <h1 th:text="${milestone.name}">마일스톤 이름</h1>
 <div th:if="${milestone.startDate != null or milestone.endDate != null}">
     <span th:text="${milestone.startDate}">시작일</span> ~

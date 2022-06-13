@@ -36,17 +36,19 @@ public class MilestoneController {
 
     @PostMapping("/create")
     public ModelAndView doCreateMilestone(@PathVariable Long projectId,
-                                          @ModelAttribute @Valid
+                                          @ModelAttribute("milestone") @Valid
                                           CreateMilestoneRequest createRequest,
                                           BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("milestone/milestone-form");
+            ModelAndView mav = new ModelAndView("milestone/milestone-form");
+            mav.addObject("url", "create");
+            return mav;
         }
 
         milestoneService.createMilestone(createRequest);
 
-        return new ModelAndView("redirect:/projects/" + projectId);
+        return new ModelAndView("redirect:/projects/" + projectId + "/milestones");
     }
 
     @GetMapping("/{id}")
@@ -60,7 +62,7 @@ public class MilestoneController {
         return mav;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ModelAndView milestoneList(@PathVariable Long projectId) {
 
         ModelAndView mav = new ModelAndView("milestone/list");
@@ -93,7 +95,9 @@ public class MilestoneController {
                                  BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("milestone/milestone-form");
+            ModelAndView mav = new ModelAndView("milestone/milestone-form");
+            mav.addObject("url", "modify");
+            return mav;
         }
 
         milestoneService.modifyMilestone(modifyRequest);
@@ -106,6 +110,6 @@ public class MilestoneController {
 
         milestoneService.deleteMilestone(id);
 
-        return new ModelAndView("redirect:/projects/" + projectId + "/milestones/list");
+        return new ModelAndView("redirect:/projects/" + projectId + "/milestones");
     }
 }
