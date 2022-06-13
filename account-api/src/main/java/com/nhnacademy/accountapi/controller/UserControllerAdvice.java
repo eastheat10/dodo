@@ -42,6 +42,8 @@ public class UserControllerAdvice {
 
         Map<String, String> errors = new HashMap<>();
 
+        errors.put("message", "Validation Exception");
+
         ex.getBindingResult()
           .getAllErrors()
           .forEach(c -> {

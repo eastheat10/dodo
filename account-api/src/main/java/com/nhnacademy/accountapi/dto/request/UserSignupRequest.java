@@ -18,7 +18,5 @@ public class UserSignupRequest {
     @NotBlank(message = "이메일은 공백일 수 없습니다.")
     @Email(message = "이메일 주소가 유효하지 않습니다.")
     private String email;
-
-
 }
 
