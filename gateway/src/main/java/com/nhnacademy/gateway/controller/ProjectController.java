@@ -41,11 +41,9 @@ public class ProjectController {
         ModelAndView mav = new ModelAndView("project/list");
 
         String username = (String) redisTemplate.opsForHash().get(httpSession.getId(), "username");
-
         log.info("session username = {}", username);
 
         List<ProjectResponse> projects = projectService.findProjectByUsername(username);
-
         mav.addObject("projects", projects);
 
         return mav;
