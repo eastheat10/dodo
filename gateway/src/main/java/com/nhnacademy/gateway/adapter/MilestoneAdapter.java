@@ -49,7 +49,7 @@ public class MilestoneAdapter {
     public List<MilestoneResponse> findMilestonesByProjectId(Long projectId) {
 
         AdapterTemplate<List<MilestoneResponse>> template = AdapterTemplate.of();
-        return template.find(restTemplate, MILESTONES + "/project/" + projectId);
+        return template.findAll(restTemplate, MILESTONES + "/project/" + projectId);
     }
 
     public void modifyMilestone(ModifyMileStoneRequest modifyRequest) {

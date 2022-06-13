@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org" lang="ko">
 <head th:replace="/fragments/header :: html-head">
-
+</head>
 <body>
 
 <h1 th:text="${project.name}">Project Name</h1>
@@ -9,12 +9,23 @@
 <span th:text="${project.endDate}">End Date</span>
 <br/>
 
-<a th:href="@{|${project.id}/tasks/create|}">업무 생성</a><br />
-<a th:href="@{|${project.id}/milestones/create|}">마일스톤 생성</a><br />
-<a th:href="@{|${project.id}/milestones|}">마일스톤 목록</a><br />
-<a th:href="@{|${project.id}/tags/create|}">태그 생성</a><br />
-<a th:href="@{|${project.id}/tags|}">태그 목록</a><br />
-
+<ul>
+    <li>
+        <a th:href="@{|${project.id}/tasks/create|}">업무 생성</a><br/>
+    </li>
+    <li>
+        <a th:href="@{|${project.id}/milestones/create|}">마일스톤 생성</a><br/>
+    </li>
+    <li>
+        <a th:href="@{|${project.id}/milestones|}">마일스톤 목록</a><br/>
+    </li>
+    <li>
+        <a th:href="@{|${project.id}/tags/create|}">태그 생성</a><br/>
+    </li>
+    <li>
+        <a th:href="@{|${project.id}/tags|}">태그 목록</a><br/>
+    </li>
+</ul>
 <table>
     <thead>
     <tr>
@@ -24,9 +35,10 @@
     </thead>
     <tbody>
     <tr th:each="t : ${tasks}">
-        <td th:text="t.id">업무 번호</td>
-        <td class="move" th:text="t.name"
-        th:onclick="'location.href=\''+ @{|/tasks/${t.id}|} + '\''">업무 이름</td>
+        <td th:text="${t.id}">업무 번호</td>
+        <td class="move" th:text="${t.title}"
+            th:onclick="'location.href=\''+ @{|/projects/${project.id}/tasks/${t.id}|} + '\''">업무 이름
+        </td>
     </tr>
     </tbody>
 </table>

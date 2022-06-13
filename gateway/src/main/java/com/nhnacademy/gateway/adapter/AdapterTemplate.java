@@ -40,7 +40,7 @@ public class AdapterTemplate<R> {
         verifyCode(exchange.getStatusCode());
     }
 
-    public R find(RestTemplate restTemplate, String path) {
+    public R findAll(RestTemplate restTemplate, String path) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(APPLICATION_JSON));

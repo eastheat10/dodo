@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="https://www.thymeleaf.org"
+>
+<head th:replace="/fragments/header :: html-head">
+</head>
+<body>
+
+<a th:href="@{|/projects/${projectId}|}">TO TASK LIST</a>
+
+<h1 th:text="${task.title}">제목</h1>
+<textarea th:text="${task.content}" disabled>내용</textarea>
+<br/>
+
+<div>
+    <label>
+        등록자: <span th:text="${task.registrantName}"></span>
+    </label>
+</div>
+<br/>
+
+<div th:if="${task.milestone != null}">
+    <label>
+        마일스톤: <span th:text="${task.milestone.name}"></span>
+    </label>
+</div>
+<br/>
+
+<div th:if="${task.tags.size > 0}">
+    태그 <br/>
+    <table>
+        <tr th:each="t : ${task.tags}">
+            <td th:text="${t.name}"></td>
+        </tr>
+    </table>
+</div>
+<br/>
+
+<div>
+    <button th:onclick="'location.href=\'' + @{|${task.id}/modify|} + '\''">수정</button>
+    &nbsp;
+    <button th:onclick="'location.href=\'' + @{|${task.id}/delete|} + '\''">삭제</button>
+</div>
+
+<div th:if="${task.comments.size > 0}">
+    <h3>댓글</h3>
+    <div th:each="c : ${task.comments}" style="border: 1px black solid;">
+        <label>
+            작성자: <span th:text="${c.username}"></span> <br/>
+            <span th:if="${modifiedAt == null}" th:text="${c.createdAt}"></span>
+            <span th:unless="${modifiedAt == null}" th:text="${c.modifiedAt} + '수정됨'"></span>
+            <br />
+            <textarea th:text="comment"></textarea>
+        </label>
+        <div th:if="${username eq c.username}">
+            <button th:onclick="'location.href=\'' + @{|${task.id}/comments/modify|} + '\''">수정</button>
+            &nbsp;
+            <button th:onclick="'location.href=\'' + @{|${task.id}/comments/delete|} + '\''">삭제</button>
+        </div>
+        <br />
+    </div>
+</div>
+<div>
+    <h3>댓글 작성</h3>
+    <form th:action="@{|/projects/${projectId}/tasks/${task.id}/comments/create|}" method="POST">
+        <input type="hidden" name="taskId" th:value="${task.id}" />
+        <input type="hidden" name="username" th:value="${username}" />
+        <input type="hidden" th:value="${task.id}" />
+
+        <textarea name="comment"></textarea>
+
+        <br/><br/>
+        <input type="submit" value="SUBMIT"/>
+
+    </form>
+</div>
+</body>
+</html>

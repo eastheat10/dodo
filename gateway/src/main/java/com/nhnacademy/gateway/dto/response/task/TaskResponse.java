@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TaskResponse {
 
+    private Long id;
     private String title;
     private String content;
     private String registrantName;

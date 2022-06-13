@@ -55,7 +55,7 @@ public class ProjectController {
         ModelAndView mav = new ModelAndView("project/project");
 
         ProjectResponse project = projectService.findProject(id);
-        List<TaskListResponse> tasks = taskService.findTaskList(id);
+        List<TaskListResponse> tasks = taskService.findTasksByProjectId(id);
 
         mav.addObject("project", project);
         mav.addObject("tasks", tasks);

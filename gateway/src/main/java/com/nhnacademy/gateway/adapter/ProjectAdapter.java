@@ -44,7 +44,7 @@ public class ProjectAdapter {
         final String PATH = PROJECTS + "/members/" + username;
 
         AdapterTemplate<List<ProjectResponse>> template = AdapterTemplate.of();
-        return template.find(restTemplate, PATH);
+        return template.findAll(restTemplate, PATH);
     }
 
     public ProjectResponse findProject(final Long id) {

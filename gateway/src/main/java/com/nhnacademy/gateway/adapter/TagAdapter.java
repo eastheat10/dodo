@@ -33,23 +33,7 @@ public class TagAdapter {
     public List<TagResponse> findTagsByProjectId(Long projectId) {
 
         AdapterTemplate<List<TagResponse>> template = AdapterTemplate.of();
-        return template.find(restTemplate, TAGS + "/project/" + projectId);
-
-//        final String PATH = "/" + projectId;
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(List.of(APPLICATION_JSON));
-//
-//        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-//
-//        ResponseEntity<List<TagResponse>> exchange =
-//            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
-//                new ParameterizedTypeReference<>() {
-//                });
-//
-//        AdapterTemplate.verifyCode(exchange.getStatusCode());
-//
-//        return exchange.getBody();
+        return template.findAll(restTemplate, TAGS + "/project/" + projectId);
     }
 
     public TagResponse findById(Long id) {
