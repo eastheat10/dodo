@@ -16,10 +16,10 @@
     </thead>
     <tbody>
     <tr th:each="p : ${projects}">
-        <td th:text="${p.projectId}">프로젝트 번호</td>
+        <td th:text="${p.id}">프로젝트 번호</td>
         <td class="move"
             th:text="${p.name}"
-            th:onclick="'location.href=\''+ @{|/projects/${p.projectId}|} + '\''">프로젝트 이름
+            th:onclick="'location.href=\''+ @{|/projects/${p.id}|} + '\''">프로젝트 이름
         </td>
         <td th:text="${p.status}">프로젝트 상태</td>
         <td th:text="${p.startDate}">시작일</td>
