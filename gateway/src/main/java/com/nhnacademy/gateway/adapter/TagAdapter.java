@@ -1,6 +1,6 @@
 package com.nhnacademy.gateway.adapter;
 
-import static com.nhnacademy.gateway.adapter.AdapterCUDTemplate.BASE_URL;
+import static com.nhnacademy.gateway.adapter.AdapterTemplate.BASE_URL;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -27,7 +27,7 @@ public class TagAdapter {
 
     public void createTag(CreateTagRequest createRequest) {
 
-        AdapterCUDTemplate.create(restTemplate, TAGS, createRequest);
+        AdapterTemplate.create(restTemplate, TAGS, createRequest);
     }
 
     public List<TagResponse> findTagsByProjectId(Long projectId) {
@@ -44,18 +44,18 @@ public class TagAdapter {
                 new ParameterizedTypeReference<>() {
                 });
 
-        AdapterCUDTemplate.verifyCode(exchange.getStatusCode());
+        AdapterTemplate.verifyCode(exchange.getStatusCode());
 
         return exchange.getBody();
     }
 
     public void modifyTag(ModifyTagRequest modifyRequest) {
 
-        AdapterCUDTemplate.modify(restTemplate, TAGS, modifyRequest);
+        AdapterTemplate.modify(restTemplate, TAGS, modifyRequest);
     }
 
     public void deleteTag(Long id) {
 
-        AdapterCUDTemplate.delete(restTemplate, TAGS, id);
+        AdapterTemplate.delete(restTemplate, TAGS, id);
     }
 }

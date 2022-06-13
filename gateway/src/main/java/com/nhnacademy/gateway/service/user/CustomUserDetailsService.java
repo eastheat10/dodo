@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.service;
+package com.nhnacademy.gateway.service.user;
 
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -20,6 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,9 +32,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private static final String BASE_URL = "http://localhost:8081";
 
     private final RestTemplate restTemplate;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        log.info("login start");
 
         final String PATH = "/users/login";
 
@@ -58,6 +62,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                                         .orElseThrow(() -> new UsernameNotFoundException(username));
 
         log.info("login user response = {}", response.getUsername());
+        log.info("login user response = {}", response);
+
+        log.info("encoding = {}", passwordEncoder.encode("1234"));
+//        $2a$10$qgqXPyAnnLXX/qDyhzd01u5XAE6BjJErgiOohjd8QdmSrMIRXzdfe
+
         log.info("login status code = {}", exchange.getStatusCode());
 
         return new CustomUser(response, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));

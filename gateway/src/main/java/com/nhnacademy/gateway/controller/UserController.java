@@ -1,7 +1,7 @@
 package com.nhnacademy.gateway.controller;
 
 import com.nhnacademy.gateway.dto.request.user.UserSignupRequest;
-import com.nhnacademy.gateway.service.UserSignUpService;
+import com.nhnacademy.gateway.service.user.UserService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserSignUpService userSignUpService;
+    private final UserService userService;
 
     @GetMapping("/signup")
     public ModelAndView signup(UserSignupRequest userSignupRequest) {
@@ -32,7 +32,7 @@ public class UserController {
             return new ModelAndView("user/signup-form");
         }
 
-        userSignUpService.requestSignup(userSignupRequest);
+        userService.requestSignup(userSignupRequest);
 
         return new ModelAndView("redirect:/");
     }
@@ -40,5 +40,10 @@ public class UserController {
     @GetMapping("/users/login")
     public ModelAndView login() {
         return new ModelAndView("user/login-form");
+    }
+
+    @GetMapping("/users/logout")
+    public ModelAndView logout() {
+        return new ModelAndView("user/logout");
     }
 }

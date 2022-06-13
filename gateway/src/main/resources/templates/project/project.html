@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ko">
+<head th:replace="/fragments/header :: html-head">
+
+<body>
+
+<h1 th:text="${project.name}">Project Name</h1>
+<span th:text="${project.startDate}">Start Date</span> ~
+<span th:text="${project.endDate}">End Date</span>
+
+<a href="/tasks/create">업무 생성</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>업무 번호</th>
+        <th>업무 이름</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${tasks}">
+        <td th:text="t.id">업무 번호</td>
+        <td class="move" th:text="t.name"
+        th:onclick="'location.href=\''+ @{|/tasks/${t.id}|} + '\''">업무 이름</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 public class CustomUser implements UserDetails {
 
+    private final Long id;
     private final String username;
     private final String password;
     private final String email;
@@ -18,6 +19,7 @@ public class CustomUser implements UserDetails {
     private final List<? extends GrantedAuthority> authorities;
 
     public CustomUser(UserResponse userResponse, List<? extends GrantedAuthority> authorities) {
+        this.id = userResponse.getId();
         this.username = userResponse.getUsername();
         this.password = userResponse.getPassword();
         this.email = userResponse.getEmail();
@@ -42,21 +44,21 @@ public class CustomUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

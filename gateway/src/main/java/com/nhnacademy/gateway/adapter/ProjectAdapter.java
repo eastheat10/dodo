@@ -1,6 +1,6 @@
 package com.nhnacademy.gateway.adapter;
 
-import static com.nhnacademy.gateway.adapter.AdapterCUDTemplate.*;
+import static com.nhnacademy.gateway.adapter.AdapterTemplate.*;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.MediaType.*;
 
@@ -27,48 +27,57 @@ public class ProjectAdapter {
 
     private final RestTemplate restTemplate;
 
-    public void createProject(CreateProjectRequest createRequest) {
+    public void createProject(final CreateProjectRequest createRequest) {
 
         create(restTemplate, PROJECTS, createRequest);
     }
 
-    public void addMembers(AddProjectMemberRequest addProjectMemberRequest) {
+    public void addMembers(final AddProjectMemberRequest addProjectMemberRequest) {
 
         final String PATH = PROJECTS + "/members";
 
         create(restTemplate, PATH, addProjectMemberRequest);
     }
 
-    public List<ProjectResponse> findProjectList(String username) {
+    public List<ProjectResponse> findProjectList(final String username) {
 
-        final String PATH = "/members/" + username;
+        final String PATH = PROJECTS + "/members/" + username;
+
+        AdapterTemplate<List<ProjectResponse>> template = AdapterTemplate.of();
+        return template.find(restTemplate, PATH);
+    }
+
+    public ProjectResponse findProject(final Long id) {
+
+//        final String PATH = PROJECTS + "/" + id;
+//
+//        AdapterTemplate<ProjectResponse> template = AdapterTemplate.of();
+//        return template.find(restTemplate, PATH);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(APPLICATION_JSON));
 
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
 
-        ResponseEntity<List<ProjectResponse>> exchange =
-            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
-                new ParameterizedTypeReference<>() {
-                });
+        ResponseEntity<ProjectResponse> exchange =
+            restTemplate.exchange(REQUEST_URL + "/" + id, GET, httpEntity, ProjectResponse.class);
 
         verifyCode(exchange.getStatusCode());
 
         return exchange.getBody();
     }
 
-    public void makeDormantProject(Long id) {
+    public void makeDormantProject(final Long id) {
 
-        projectStatusChange(DORMANT,id);
+        projectStatusChange(DORMANT, id);
     }
 
-    public void makeEndProject(Long id) {
+    public void makeEndProject(final Long id) {
 
         projectStatusChange(END, id);
     }
 
-    private void projectStatusChange(String status, Long id) {
+    private void projectStatusChange(final String status, final Long id) {
 
         final String PATH = "/" + id + "/" + status;
 
@@ -76,7 +85,8 @@ public class ProjectAdapter {
 
         ResponseEntity<Void> exchange =
             restTemplate.exchange(REQUEST_URL + PATH, PUT, httpEntity,
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<>() {
+                });
 
         verifyCode(exchange.getStatusCode());
     }

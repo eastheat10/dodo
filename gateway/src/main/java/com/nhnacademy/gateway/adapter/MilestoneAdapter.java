@@ -1,6 +1,6 @@
 package com.nhnacademy.gateway.adapter;
 
-import static com.nhnacademy.gateway.adapter.AdapterCUDTemplate.*;
+import static com.nhnacademy.gateway.adapter.AdapterTemplate.*;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 

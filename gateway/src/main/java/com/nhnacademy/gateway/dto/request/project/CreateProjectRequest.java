@@ -1,15 +1,22 @@
 package com.nhnacademy.gateway.dto.request.project;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@Builder
 @AllArgsConstructor
 public class CreateProjectRequest {
 
-    private final Long adminId;
-    private final String adminUsername;
+    @Setter
+    private Long adminId;
+
+    @Setter
+    private String adminUsername;
+
+    @NotBlank
     private final String projectName;
+    @NotBlank
+    private final String content;
 }

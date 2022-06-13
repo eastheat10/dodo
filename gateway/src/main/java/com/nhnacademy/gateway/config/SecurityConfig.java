@@ -1,7 +1,9 @@
 package com.nhnacademy.gateway.config;
 
 import com.nhnacademy.gateway.security.handler.LoginSuccessHandler;
+import com.nhnacademy.gateway.service.user.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,12 +11,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -25,29 +27,37 @@ public class SecurityConfig {
 
         http
             .authorizeRequests()
-            .antMatchers("/", "/login", "/signup").permitAll();
+            .antMatchers("/", "/login", "/signup", "/users/login").permitAll()
+            .antMatchers("/projects/**").authenticated()
+            .and();
 
         http
             .formLogin()
-            .successHandler(loginSuccessHandler(null))
+            .defaultSuccessUrl("/", true)
+            .loginPage("/users/login")
             .usernameParameter("username")
             .passwordParameter("password")
-            .loginPage("/users/login")
-            .loginProcessingUrl("/login");
+            .successHandler(loginSuccessHandler(null))
+            .loginProcessingUrl("/login")
+            .and();
 
         http
             .logout()
-            .logoutUrl("/users/logout");
+            .logoutSuccessUrl("/")
+            .clearAuthentication(true)
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
+            .and();
 
         http
             .headers()
             .defaultsDisabled()
             .frameOptions()
-            .sameOrigin();
+            .sameOrigin()
+            .and();
 
         http
-            .csrf()
-            .disable();
+            .csrf();
 
         return http.build();
     }
@@ -60,8 +70,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
-                                                         PasswordEncoder passwordEncoder) {
+    public AuthenticationProvider authenticationProvider(
+        CustomUserDetailsService userDetailsService,
+        PasswordEncoder passwordEncoder) {
 
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
