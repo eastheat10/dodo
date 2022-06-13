@@ -2,6 +2,7 @@ package com.nhnacademy.gateway.controller;
 
 import com.nhnacademy.gateway.dto.request.user.UserSignupRequest;
 import com.nhnacademy.gateway.service.user.UserService;
+import com.nhnacademy.gateway.service.UserSignUpService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     private final UserService userService;
+    private final UserSignUpService userSignUpService;
 
     @GetMapping("/signup")
     public ModelAndView signup(UserSignupRequest userSignupRequest) {
@@ -33,6 +35,7 @@ public class UserController {
         }
 
         userService.requestSignup(userSignupRequest);
+        userSignUpService.requestSignup(userSignupRequest);
 
         return new ModelAndView("redirect:/");
     }

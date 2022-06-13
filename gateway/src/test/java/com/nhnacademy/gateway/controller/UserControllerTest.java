@@ -19,7 +19,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-//@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(controllers = UserController.class)
 @WithMockUser
 class UserControllerTest {
@@ -45,6 +44,7 @@ class UserControllerTest {
                    .with(csrf()))
                .andExpect(status().is3xxRedirection());
 
+
         doNothing().when(userService).requestSignup(any());
 
         verify(userService, times(1)).requestSignup(any());
@@ -53,6 +53,7 @@ class UserControllerTest {
     @Test
     @DisplayName("회원가입 양식 오류")
     void testSignupFormError() throws Exception {
+
 
         mockMvc.perform(post("/signup")
                    .param("username", "")

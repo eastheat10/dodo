@@ -1,5 +1,6 @@
 package com.nhnacademy.taskapi.dto.request.task;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,6 @@ public class CreateTaskRequest {
     @NotBlank
     private String registrantName;
 
-    private List<Long> tags;
-    private List<Long> people; // 담당자
+    private List<Long> tags = new ArrayList<>();
+    private List<Long> people = new ArrayList<>(); // 담당자
 }

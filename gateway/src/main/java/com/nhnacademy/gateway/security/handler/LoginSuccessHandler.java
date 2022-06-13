@@ -41,6 +41,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         cookie.setMaxAge(daysToSec(3));
         response.addCookie(cookie);
 
+
         redisTemplate.opsForHash().put(session.getId(), "username", user.getUsername());
         redisTemplate.opsForHash().put(session.getId(), "id", String.valueOf(user.getId()));
 

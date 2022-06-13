@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class ProjectResponse {
 
-    private final Long projectId;
+    private final Long id;
     private final String name;
     private final String status;
 
@@ -19,7 +19,7 @@ public class ProjectResponse {
     private final LocalDate endDate;
 
     public ProjectResponse(Project project) {
-        this.projectId = project.getId();
+        this.id = project.getId();
         this.name = project.getName();
         this.status = project.getStatus().getStatus();
         this.startDate = project.getStartDate();

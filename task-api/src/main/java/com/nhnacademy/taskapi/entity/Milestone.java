@@ -38,13 +38,13 @@ public class Milestone {
 
     public Milestone(Project project, CreateMileStoneRequest request) {
         this.project = project;
-        this.name = request.getMilestoneName();
+        this.name = request.getName();
         this.startDate = LocalDate.now();
         this.endDate = request.getEndDate();
     }
 
     public void modifyMilestone(ModifyMileStoneRequest modifyRequest) {
-        this.name = modifyRequest.getMilestoneName();
+        this.name = modifyRequest.getName();
         this.startDate = modifyRequest.getStartDate();
         this.endDate = modifyRequest.getEndDate();
     }

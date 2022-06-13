@@ -4,6 +4,7 @@ import com.nhnacademy.gateway.security.handler.LoginSuccessHandler;
 import com.nhnacademy.gateway.service.user.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -48,6 +50,19 @@ public class SecurityConfig {
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
             .and();
+            .antMatchers("/", "/login", "/signup").permitAll();
+
+        http
+            .formLogin()
+            .successHandler(loginSuccessHandler(null))
+            .usernameParameter("username")
+            .passwordParameter("password")
+            .loginPage("/users/login")
+            .loginProcessingUrl("/login");
+
+        http
+            .logout()
+            .logoutUrl("/users/logout");
 
         http
             .headers()
@@ -55,6 +70,10 @@ public class SecurityConfig {
             .frameOptions()
             .sameOrigin()
             .and();
+
+        http
+            .csrf();
+            .sameOrigin();
 
         http
             .csrf();

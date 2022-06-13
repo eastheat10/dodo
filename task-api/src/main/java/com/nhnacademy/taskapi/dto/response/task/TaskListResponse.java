@@ -1,4 +1,4 @@
-package com.nhnacademy.taskapi.dto.request.task;
+package com.nhnacademy.taskapi.dto.response.task;
 
 import com.nhnacademy.taskapi.entity.Task;
 import lombok.Getter;

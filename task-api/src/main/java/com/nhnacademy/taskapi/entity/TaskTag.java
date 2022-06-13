@@ -29,12 +29,12 @@ public class TaskTag {
     private Task task;
 
     @MapsId("tagId")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
     public TaskTag(Task task, Tag tag) {
-        this.id = new Pk(task.getId(), task.getId());
+        this.id = new Pk(task.getId(), tag.getId());
         this.task = task;
         this.tag = tag;
     }

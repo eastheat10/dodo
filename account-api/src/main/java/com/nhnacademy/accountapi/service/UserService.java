@@ -1,5 +1,7 @@
 package com.nhnacademy.accountapi.service;
 
+import static java.util.stream.Collectors.*;
+
 import com.nhnacademy.accountapi.dto.request.UserLoginRequest;
 import com.nhnacademy.accountapi.dto.request.UserSignupRequest;
 import com.nhnacademy.accountapi.dto.response.UserResponse;
@@ -9,6 +11,8 @@ import com.nhnacademy.accountapi.exception.LoginUserNotFoundException;
 import com.nhnacademy.accountapi.exception.UsernameOverlapException;
 import com.nhnacademy.accountapi.exception.UserNoFoundException;
 import com.nhnacademy.accountapi.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -72,5 +76,12 @@ public class UserService {
                                   .orElseThrow(UserNoFoundException::new);
 
         user.deleteUser();
+    }
+
+    public List<UserResponse> findAll() {
+        return userRepository.findAll()
+                             .stream()
+                             .map(UserResponse::new)
+                             .collect(toList());
     }
 }
