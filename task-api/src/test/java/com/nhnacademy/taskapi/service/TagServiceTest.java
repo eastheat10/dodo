@@ -94,7 +94,7 @@ class TagServiceTest {
 
         ModifyTagRequest request = new ModifyTagRequest();
         ReflectionTestUtils.setField(request, "id", 1L);
-        ReflectionTestUtils.setField(request,"tagName", "tag1");
+        ReflectionTestUtils.setField(request,"name", "tag1");
 
         Tag tag = spy(new Tag());
 
@@ -103,8 +103,8 @@ class TagServiceTest {
         tagService.modifyTag(request);
 
         verify(tagRepository, times(1)).findById(request.getId());
-        verify(tag, times(1)).modifyTag(request.getTagName());
-        assertThat(tag.getName()).isEqualTo(request.getTagName());
+        verify(tag, times(1)).modifyTag(request.getName());
+        assertThat(tag.getName()).isEqualTo(request.getName());
     }
 
     @Test

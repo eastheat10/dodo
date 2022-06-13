@@ -13,5 +13,5 @@ public class ModifyTagRequest {
     private Long id;
 
     @NotBlank
-    private String tagName;
+    private String name;
 }

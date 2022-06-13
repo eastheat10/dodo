@@ -30,7 +30,7 @@ public class ProjectService {
         Project createdProject = projectRepository.save(new Project(createRequest));
 
         ProjectMember projectMember =
-            new ProjectMember(createdProject, createdProject.getId(), createdProject.getName());
+            new ProjectMember(createdProject, createdProject.getId(), createdProject.getAdminUsername());
 
         projectMembersRepository.save(projectMember);
     }
@@ -41,6 +41,14 @@ public class ProjectService {
                                 .stream()
                                 .map(ProjectResponse::new)
                                 .collect(toList());
+    }
+
+    public ProjectResponse findProject(Long id) {
+
+        Project project = projectRepository.findById(id)
+                                           .orElseThrow(ProjectNotFoundException::new);
+
+        return new ProjectResponse(project);
     }
 
     @Transactional
