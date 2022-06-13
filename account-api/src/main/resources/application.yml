@@ -6,7 +6,8 @@ spring:
     include: db
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    database-platform: org.hibernate.dialect.H2Dialect
     properties:
       hibernate:
         show_sql: true
