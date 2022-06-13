@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="/fragments/header :: html-head">
+
+</head>
+<body>
+
+<h1>프로젝트 생성</h1>
+
+<form method="POST" th:action="@{create}" th:object="${createProjectRequest}">
+
+    <input type="text" name="projectName" placeholder="PROJECT NAME">
+    <br />
+    <span class="error" th:if="${#fields.hasErrors('projectName')}" th:error="*{projectName}">PROJECT NAME ERROR</span>
+    <br />
+
+    <textarea name="content" placeholder="CONTENT"></textarea>
+    <br />
+    <span class="error" th:if="${#fields.hasErrors('content')}" th:error="*{content}">CONTENT ERROR</span>
+    <br />
+
+    <input type="submit" value="SUBMIT">
+</form>
+</body>
+</html>

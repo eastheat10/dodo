@@ -2,7 +2,7 @@ package com.nhnacademy.gateway.controller;
 
 import com.nhnacademy.gateway.dto.response.oauth.GithubProfile;
 import com.nhnacademy.gateway.exception.WrongEmailException;
-import com.nhnacademy.gateway.service.OAuth2Service;
+import com.nhnacademy.gateway.service.user.OAuth2Service;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

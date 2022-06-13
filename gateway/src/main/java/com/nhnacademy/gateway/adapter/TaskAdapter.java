@@ -1,6 +1,6 @@
 package com.nhnacademy.gateway.adapter;
 
-import static com.nhnacademy.gateway.adapter.AdapterCUDTemplate.BASE_URL;
+import static com.nhnacademy.gateway.adapter.AdapterTemplate.BASE_URL;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -28,7 +28,7 @@ public class TaskAdapter {
 
     public void createTask(CreateTaskRequest createRequest) {
 
-        AdapterCUDTemplate.create(restTemplate, TASKS, createRequest);
+        AdapterTemplate.create(restTemplate, TASKS, createRequest);
     }
 
     public TaskResponse findTask(Long id) {
@@ -45,7 +45,7 @@ public class TaskAdapter {
                 new ParameterizedTypeReference<>() {
                 });
 
-        AdapterCUDTemplate.verifyCode(exchange.getStatusCode());
+        AdapterTemplate.verifyCode(exchange.getStatusCode());
 
         return exchange.getBody();
     }
@@ -64,18 +64,18 @@ public class TaskAdapter {
                 new ParameterizedTypeReference<>() {
                 });
 
-        AdapterCUDTemplate.verifyCode(exchange.getStatusCode());
+        AdapterTemplate.verifyCode(exchange.getStatusCode());
 
         return exchange.getBody();
     }
 
     public void modifyTask(ModifyTaskRequest modifyRequest) {
 
-        AdapterCUDTemplate.modify(restTemplate, TASKS, modifyRequest);
+        AdapterTemplate.modify(restTemplate, TASKS, modifyRequest);
     }
 
     public void deleteMilestone(Long id) {
 
-        AdapterCUDTemplate.delete(restTemplate, TASKS, id);
+        AdapterTemplate.delete(restTemplate, TASKS, id);
     }
 }

@@ -1,4 +1,4 @@
-package com.nhnacademy.gateway.dto.request;
+package com.nhnacademy.gateway.dto.request.oauth;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

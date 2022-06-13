@@ -1,10 +1,12 @@
 package com.nhnacademy.gateway.adapter;
 
 import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,9 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AdapterCUDTemplate {
+public class AdapterTemplate<R> {
 
     public static final String BASE_URL = "http://localhost:8082";
+
+    public static <V> AdapterTemplate<V> of() {
+        return new AdapterTemplate<>();
+    }
 
     public static <T> void create(RestTemplate restTemplate, String domain, T createRequest) {
 
@@ -32,6 +38,23 @@ public class AdapterCUDTemplate {
                 });
 
         verifyCode(exchange.getStatusCode());
+    }
+
+    public R find(RestTemplate restTemplate, String path) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(APPLICATION_JSON));
+
+        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<R> exchange =
+            restTemplate.exchange(BASE_URL + path, GET, httpEntity,
+                new ParameterizedTypeReference<>() {
+                });
+
+        verifyCode(exchange.getStatusCode());
+
+        return exchange.getBody();
     }
 
     public static <T> void modify(RestTemplate restTemplate, String domain, T modifyRequest) {

@@ -1,13 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="https://www.thymeleaf.org" lang="ko"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 
-<a href="/signup">회원가입</a>
-<br/>
-<a href="/users/login">로그인</a>
+<div sec:authorize="!isAuthenticated()">
+    <a href="/signup">회원가입</a>
+    <br/>
+    <a href="/users/login">로그인</a>
+    <br/>
+</div>
+<div sec:authorize="isAuthenticated()">
+    <span sec:authentication="principal.username"></span>
+    <a href="/users/logout">로그아웃</a>
+    <br/>
+    <a href="/projects/list">프로젝트 목록</a>
+    <br/>
+    <a href="/projects/create">프로젝트 생성</a>
+</div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 package com.nhnacademy.gateway.adapter;
 
-import static com.nhnacademy.gateway.adapter.AdapterCUDTemplate.*;
+import static com.nhnacademy.gateway.adapter.AdapterTemplate.*;
 
 import com.nhnacademy.gateway.dto.request.comment.CreateCommentRequest;
 import com.nhnacademy.gateway.dto.request.comment.ModifyCommentRequest;
