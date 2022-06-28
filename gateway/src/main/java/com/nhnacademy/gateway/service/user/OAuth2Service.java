@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import javax.security.auth.login.FailedLoginException;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +63,12 @@ public class OAuth2Service {
     public String getRedirectUrl() {
         return "https://github.com/login/oauth/authorize?" +
             "client_id=" + CLIENT_ID + "&" +
+            "redirect_uri=" + REDIRECT_URL;
+    }
+
+    public String getRedirectUrlWithState() {
+        return "https://github.com/login/oauth/authorize?" +
+            "client_id=" + CLIENT_ID + "&state=" + "any-string" +
             "redirect_uri=" + REDIRECT_URL;
     }
 
@@ -116,28 +123,6 @@ public class OAuth2Service {
         return profileResponse.getBody();
     }
 
-    private Authentication getAuthentication(UserDetails user) {
-
-        Authentication authentication =
-            new UsernamePasswordAuthenticationToken(user, user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-
-        return authentication;
-    }
-
-    private HttpEntity<AccessToken> getCodeRequest(String code) {
-
-        AccessToken token = new AccessToken(CLIENT_ID, CLIENT_SECRET, code);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-        return new HttpEntity<>(token, headers);
-    }
-
     private OAuthToken getOAuthToken(String code) {
 
         HttpEntity<AccessToken> codeRequest = getCodeRequest(code);
@@ -153,6 +138,28 @@ public class OAuth2Service {
         HttpHeaders requestHeader = new HttpHeaders();
         requestHeader.add("Authorization", "token " + token.getAccessToken());
         return new HttpEntity<>(requestHeader);
+    }
+
+    private HttpEntity<AccessToken> getCodeRequest(String code) {
+
+        AccessToken token = new AccessToken(CLIENT_ID, CLIENT_SECRET, code);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        return new HttpEntity<>(token, headers);
+    }
+
+    private Authentication getAuthentication(UserDetails user) {
+
+        Authentication authentication =
+            new UsernamePasswordAuthenticationToken(user, user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        return authentication;
     }
 
     public void setInRedis(HttpServletRequest request, HttpServletResponse response,

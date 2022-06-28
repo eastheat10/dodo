@@ -31,10 +31,16 @@ public class Oauth2Controller {
 
     @GetMapping("/oauth2/code/github")
     public ModelAndView githubRedirect(@RequestParam("code") String code,
+//                                       @RequestParam("state") String state,
                                        HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException, WrongEmailException {
 
+//        if (state.equals("any-string")) {
+//            throw new FailedLoginException();
+//        }
+
         GithubProfile profile = oAuth2Service.getProfile(code);
+
 
         boolean existUser =
             oAuth2Service.verifyResidentByEmail(profile.getEmail(), request, response);

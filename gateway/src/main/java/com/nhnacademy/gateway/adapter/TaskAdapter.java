@@ -54,22 +54,6 @@ public class TaskAdapter {
 
         AdapterTemplate<List<TaskListResponse>> template = AdapterTemplate.of();
         return template.findAll(restTemplate, TASKS + "/project/" + projectId);
-
-//        final String PATH = "/project/" + projectId;
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(List.of(APPLICATION_JSON));
-//
-//        HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-//
-//        ResponseEntity<List<TaskListResponse>> exchange =
-//            restTemplate.exchange(REQUEST_URL + PATH, GET, httpEntity,
-//                new ParameterizedTypeReference<>() {
-//                });
-//
-//        AdapterTemplate.verifyCode(exchange.getStatusCode());
-//
-//        return exchange.getBody();
     }
 
     public void modifyTask(ModifyTaskRequest modifyRequest) {

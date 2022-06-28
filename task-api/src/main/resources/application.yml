@@ -6,12 +6,9 @@ spring:
     include: db
 
   jpa:
-#    database-platform: org.hibernate.dialect.H2Dialect
     database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         show_sql: true
         format_sql: true
 
-#    hibernate:
-#      ddl-auto: create

@@ -49,11 +49,6 @@ public class ProjectAdapter {
 
     public ProjectResponse findProject(final Long id) {
 
-//        final String PATH = PROJECTS + "/" + id;
-//
-//        AdapterTemplate<ProjectResponse> template = AdapterTemplate.of();
-//        return template.find(restTemplate, PATH);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(APPLICATION_JSON));
 

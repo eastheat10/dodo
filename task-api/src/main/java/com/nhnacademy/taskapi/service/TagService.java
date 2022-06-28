@@ -24,6 +24,7 @@ public class TagService {
     private final TagRepository tagRepository;
     private final ProjectRepository projectRepository;
 
+    @Transactional
     public void createTag(CreateTagRequest createTagRequest) {
 
         Project project = projectRepository.findById(createTagRequest.getProjectId())

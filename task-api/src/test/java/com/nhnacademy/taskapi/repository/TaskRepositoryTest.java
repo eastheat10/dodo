@@ -13,9 +13,11 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 class TaskRepositoryTest {
 
@@ -34,6 +36,7 @@ class TaskRepositoryTest {
         ReflectionTestUtils.setField(project, "adminId", 99L);
         ReflectionTestUtils.setField(project, "adminUsername", "admin");
         ReflectionTestUtils.setField(project, "name", "project name");
+        ReflectionTestUtils.setField(project, "content", "project content");
         ReflectionTestUtils.setField(project, "status", ProjectStatus.PROGRESS);
         ReflectionTestUtils.setField(project, "name", "project name");
         ReflectionTestUtils.setField(project, "startDate", LocalDate.now());
